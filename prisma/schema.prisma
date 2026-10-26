@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Product {
+  id          String             @id @default(cuid())
+  name        String
+  description String
+  imageUrl    String
+  isActive    Boolean            @default(true)
+  variations  ProductVariation[]
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+}
+
+model ProductVariation {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  size      String // ex: "50cm"
+  finish    String // ex: "Inox Escovado"
+  hasScreen Boolean  @default(false)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productId])
+}
+
+model Article {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  titlePt     String
+  titleEn     String
+  contentPt   String
+  contentEn   String
+  coverImage  String
+  category    String   @default("Geral")
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
