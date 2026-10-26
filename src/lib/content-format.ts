@@ -1,3 +1,5 @@
+import { stripAffiliateCards } from "@/lib/affiliate-card";
+
 // Utilitários puros (sem dependências) para o conteúdo dos artigos.
 // Artigos antigos foram salvos como texto puro; os novos, como HTML do Tiptap.
 
@@ -34,7 +36,8 @@ export function toEditorHtml(content: string) {
 
 /** Extrai só o texto de um HTML (para resumos, meta description e validação). */
 export function htmlToText(html: string) {
-  return html
+  // O texto do card de afiliado (título, preço, "Ver Oferta") não entra em resumos.
+  return stripAffiliateCards(html)
     .replace(/<\/(p|h[1-6]|li|blockquote|div)>|<br\s*\/?>/gi, " ")
     .replace(/<[^>]*>/g, "")
     .replace(/&nbsp;/g, " ")

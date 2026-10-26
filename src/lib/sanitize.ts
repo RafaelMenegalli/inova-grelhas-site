@@ -1,4 +1,5 @@
 import sanitizeHtml from "sanitize-html";
+import { affiliateCardHtml, replaceAffiliateCards } from "@/lib/affiliate-card";
 import { toEditorHtml } from "@/lib/content-format";
 
 /** Prefixo das imagens que aceitamos dentro do artigo (nosso bucket público). */
@@ -12,12 +13,18 @@ function imagePrefix() {
  * Sanitiza o HTML de um artigo (só no servidor): lista fechada de tags, sem
  * scripts/eventos, links externos com rel seguro e imagens apenas do nosso bucket.
  * Aceita também texto puro legado, convertendo-o antes.
+ *
+ * Cards de produto afiliado (<div data-affiliate ...>) são a única <div> aceita: o
+ * sanitizador guarda só os dados (data-*) e o servidor reconstrói o card, validando
+ * título, link (http/https) e imagem (https). O HTML/classes que vierem no card
+ * nunca são confiados.
  */
 export function toSafeHtml(content: string) {
   const prefix = imagePrefix();
 
-  return sanitizeHtml(toEditorHtml(content), {
+  const sanitized = sanitizeHtml(toEditorHtml(content), {
     allowedTags: [
+      "div",
       "p",
       "br",
       "h2",
@@ -33,6 +40,13 @@ export function toSafeHtml(content: string) {
       "img",
     ],
     allowedAttributes: {
+      div: [
+        "data-affiliate",
+        "data-title",
+        "data-image-url",
+        "data-price",
+        "data-link",
+      ],
       a: ["href", "rel", "target"],
       img: ["src", "alt", "loading", "decoding"],
     },
@@ -67,6 +81,9 @@ export function toSafeHtml(content: string) {
     },
     // Descarta imagens que não sejam do nosso bucket (evita pixels de rastreio).
     exclusiveFilter: (frame) => {
+      // Qualquer <div> que não seja o marcador de card sai (com o conteúdo).
+      if (frame.tag === "div" && !("data-affiliate" in frame.attribs))
+        return true;
       // Parágrafos vazios (o Tiptap deixa um <p></p> no fim) não entram; os que
       // têm só imagem ficam, pois mediaChildren os identifica.
       if (
@@ -81,4 +98,6 @@ export function toSafeHtml(content: string) {
       );
     },
   });
+
+  return replaceAffiliateCards(sanitized, affiliateCardHtml);
 }

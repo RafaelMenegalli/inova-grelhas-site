@@ -11,6 +11,7 @@ import {
   Heading2,
   Heading3,
   ImageIcon,
+  ShoppingCart,
   Italic,
   Link2,
   List,
@@ -21,6 +22,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { AffiliateProductDialog } from "@/components/ui/affiliate-product-dialog";
+import { AffiliateProduct } from "@/lib/tiptap-affiliate";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -102,6 +105,7 @@ function Toolbar({
   const [linkUrl, setLinkUrl] = useState("");
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [affiliateOpen, setAffiliateOpen] = useState(false);
 
   function openLink() {
     setLinkUrl((editor.getAttributes("link").href as string | undefined) ?? "");
@@ -220,6 +224,13 @@ function Toolbar({
         >
           {uploading ? <Loader2 className="animate-spin" /> : <ImageIcon />}
         </ToolbarButton>
+        <ToolbarButton
+          label="Inserir produto afiliado"
+          active={affiliateOpen}
+          onClick={() => setAffiliateOpen(true)}
+        >
+          <ShoppingCart />
+        </ToolbarButton>
         <input
           ref={fileRef}
           type="file"
@@ -230,6 +241,19 @@ function Toolbar({
           onChange={onPickImage}
         />
       </div>
+
+      <AffiliateProductDialog
+        open={affiliateOpen}
+        onOpenChange={setAffiliateOpen}
+        onUploadImage={onUploadImage}
+        onInsert={(attrs) =>
+          editor
+            .chain()
+            .focus()
+            .insertContent({ type: "affiliateProduct", attrs })
+            .run()
+        }
+      />
 
       {linkOpen && (
         <div className="flex flex-wrap items-center gap-2 border-t bg-white p-2">
@@ -299,6 +323,7 @@ export function RichTextEditor({
       }),
       Link.configure({ openOnClick: false, autolink: true }),
       Image,
+      AffiliateProduct,
     ],
     content: value,
     onUpdate: ({ editor: e }) => onChange(e.getHTML()),
