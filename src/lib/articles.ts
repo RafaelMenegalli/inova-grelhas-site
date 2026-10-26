@@ -1,4 +1,5 @@
 import { cacheLife, cacheTag } from "next/cache";
+import { publicContentLife } from "@/lib/cache";
 import { htmlToText, toEditorHtml } from "@/lib/content-format";
 import { prisma } from "@/lib/prisma";
 import { toSafeHtml } from "@/lib/sanitize";
@@ -58,7 +59,7 @@ function toView(
 export async function getPublishedArticles(locale: Locale) {
   "use cache";
   cacheTag("articles");
-  cacheLife("hours");
+  cacheLife(publicContentLife);
 
   const rows = await prisma.article.findMany({
     where: { isPublished: true },
@@ -71,7 +72,7 @@ export async function getPublishedArticles(locale: Locale) {
 export async function getArticle(slug: string, locale: Locale) {
   "use cache";
   cacheTag("articles");
-  cacheLife("hours");
+  cacheLife(publicContentLife);
 
   const a = await prisma.article.findFirst({
     where: { slug, isPublished: true },
@@ -82,7 +83,7 @@ export async function getArticle(slug: string, locale: Locale) {
 export async function getPublishedSlugs() {
   "use cache";
   cacheTag("articles");
-  cacheLife("hours");
+  cacheLife(publicContentLife);
 
   const rows = await prisma.article.findMany({
     where: { isPublished: true },

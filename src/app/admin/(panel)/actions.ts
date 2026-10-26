@@ -32,6 +32,23 @@ function contentImages(...htmls: string[]) {
   return urls;
 }
 
+/** Atualiza o cache e as páginas públicas que mostram produtos. */
+function refreshProducts() {
+  updateTag("products");
+  revalidatePath("/admin/produtos");
+  revalidatePath("/");
+}
+
+/** Atualiza o cache e as páginas públicas do blog (PT e EN). */
+function refreshArticles() {
+  updateTag("articles");
+  revalidatePath("/admin/blog");
+  revalidatePath("/blog");
+  revalidatePath("/en/blog");
+  revalidatePath("/blog/[slug]", "page");
+  revalidatePath("/en/blog/[slug]", "page");
+}
+
 function slugify(value: string) {
   return value
     .normalize("NFD")
@@ -118,8 +135,7 @@ export async function createProduct(
     },
   });
 
-  updateTag("products");
-  revalidatePath("/admin/produtos");
+  refreshProducts();
   redirect("/admin/produtos");
 }
 
@@ -209,8 +225,7 @@ export async function updateProduct(
 
   if (newImageUrl) await deleteImage(existing.imageUrl);
 
-  updateTag("products");
-  revalidatePath("/admin/produtos");
+  refreshProducts();
   redirect("/admin/produtos");
 }
 
@@ -225,8 +240,7 @@ export async function toggleProductStatus(
   });
   if (!count) return { error: "Produto não encontrado." };
 
-  updateTag("products");
-  revalidatePath("/admin/produtos");
+  refreshProducts();
   return {};
 }
 
@@ -242,8 +256,7 @@ export async function deleteProduct(id: string): Promise<FormState> {
   await prisma.product.delete({ where: { id } });
   await deleteImage(product.imageUrl);
 
-  updateTag("products");
-  revalidatePath("/admin/produtos");
+  refreshProducts();
   return {};
 }
 
@@ -293,8 +306,7 @@ export async function createArticle(
     },
   });
 
-  updateTag("articles");
-  revalidatePath("/admin/blog");
+  refreshArticles();
   redirect("/admin/blog");
 }
 
@@ -376,8 +388,7 @@ export async function updateArticle(
     if (!kept.has(url)) await deleteImage(url);
   }
 
-  updateTag("articles");
-  revalidatePath("/admin/blog");
+  refreshArticles();
   redirect("/admin/blog");
 }
 
@@ -392,8 +403,7 @@ export async function toggleArticleStatus(
   });
   if (!count) return { error: "Artigo não encontrado." };
 
-  updateTag("articles");
-  revalidatePath("/admin/blog");
+  refreshArticles();
   return {};
 }
 
@@ -411,8 +421,7 @@ export async function deleteArticle(id: string): Promise<FormState> {
     await deleteImage(url);
   }
 
-  updateTag("articles");
-  revalidatePath("/admin/blog");
+  refreshArticles();
   return {};
 }
 

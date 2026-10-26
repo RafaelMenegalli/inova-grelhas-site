@@ -1,11 +1,12 @@
 import { cacheLife, cacheTag } from "next/cache";
+import { publicContentLife } from "@/lib/cache";
 import { prisma } from "@/lib/prisma";
 
 /** Produtos ativos com ao menos uma variação ativa, trazendo só as variações ativas. */
 export async function getActiveProducts() {
   "use cache";
   cacheTag("products");
-  cacheLife("hours");
+  cacheLife(publicContentLife);
 
   return prisma.product.findMany({
     where: { isActive: true, variations: { some: { isActive: true } } },
