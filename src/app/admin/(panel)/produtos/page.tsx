@@ -33,78 +33,100 @@ async function ProductsTable() {
     },
   });
 
+  const active = products.filter((p) => p.isActive).length;
+
   return (
-    <Card className="overflow-hidden py-0">
-      <Table>
-        <TableHeader>
-          <TableRow className="bg-slate-50 hover:bg-slate-50">
-            <TableHead className="w-20 pl-6">Foto</TableHead>
-            <TableHead>Nome</TableHead>
-            <TableHead>Variações</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="hidden sm:table-cell">Criado em</TableHead>
-            <TableHead className="w-16 pr-6 text-right">Ações</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {products.map((p) => (
-            <TableRow
-              key={p.id}
-              className={cn(!p.isActive && "bg-slate-50/60")}
-            >
-              <TableCell className="py-3 pl-6">
-                <Image
-                  src={productImages(p)[0]}
-                  alt={p.name}
-                  width={48}
-                  height={48}
+    <>
+      <p className="mb-3 text-sm text-muted-foreground">
+        <strong className="font-semibold text-foreground">
+          {products.length}
+        </strong>{" "}
+        {products.length === 1 ? "produto cadastrado" : "produtos cadastrados"}
+        {products.length > 0 && (
+          <>
+            {" "}
+            · {active} {active === 1 ? "ativo" : "ativos"} ·{" "}
+            {products.length - active}{" "}
+            {products.length - active === 1 ? "inativo" : "inativos"}
+          </>
+        )}
+      </p>
+      <Card className="overflow-hidden py-0">
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-slate-50 hover:bg-slate-50">
+              <TableHead className="w-20 pl-6">Foto</TableHead>
+              <TableHead>Nome</TableHead>
+              <TableHead>Variações</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="hidden sm:table-cell">Criado em</TableHead>
+              <TableHead className="w-16 pr-6 text-right">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {products.map((p) => (
+              <TableRow
+                key={p.id}
+                className={cn(!p.isActive && "bg-slate-50/60")}
+              >
+                <TableCell className="py-3 pl-6">
+                  <Image
+                    src={productImages(p)[0]}
+                    alt={p.name}
+                    width={48}
+                    height={48}
+                    className={cn(
+                      "size-12 rounded-lg border object-cover",
+                      !p.isActive && "opacity-50 grayscale",
+                    )}
+                  />
+                </TableCell>
+                <TableCell
                   className={cn(
-                    "size-12 rounded-lg border object-cover",
-                    !p.isActive && "opacity-50 grayscale",
+                    "font-medium",
+                    p.isActive ? "text-slate-900" : "text-slate-500",
                   )}
-                />
-              </TableCell>
-              <TableCell
-                className={cn(
-                  "font-medium",
-                  p.isActive ? "text-slate-900" : "text-slate-500",
-                )}
-              >
-                {p.name}
-              </TableCell>
-              <TableCell className="text-muted-foreground">
-                {p._count.variations}
-              </TableCell>
-              <TableCell>
-                {p.isActive ? (
-                  <Badge>Ativo</Badge>
-                ) : (
-                  <Badge variant="secondary" className="text-slate-600">
-                    Inativo
-                  </Badge>
-                )}
-              </TableCell>
-              <TableCell className="hidden text-muted-foreground sm:table-cell">
-                {p.createdAt.toLocaleDateString("pt-BR")}
-              </TableCell>
-              <TableCell className="pr-6 text-right">
-                <ProductActions id={p.id} name={p.name} isActive={p.isActive} />
-              </TableCell>
-            </TableRow>
-          ))}
-          {products.length === 0 && (
-            <TableRow>
-              <TableCell
-                colSpan={6}
-                className="py-16 text-center text-muted-foreground"
-              >
-                Nenhum produto cadastrado.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </Card>
+                >
+                  {p.name}
+                </TableCell>
+                <TableCell className="text-muted-foreground">
+                  {p._count.variations}
+                </TableCell>
+                <TableCell>
+                  {p.isActive ? (
+                    <Badge>Ativo</Badge>
+                  ) : (
+                    <Badge variant="secondary" className="text-slate-600">
+                      Inativo
+                    </Badge>
+                  )}
+                </TableCell>
+                <TableCell className="hidden text-muted-foreground sm:table-cell">
+                  {p.createdAt.toLocaleDateString("pt-BR")}
+                </TableCell>
+                <TableCell className="pr-6 text-right">
+                  <ProductActions
+                    id={p.id}
+                    name={p.name}
+                    isActive={p.isActive}
+                  />
+                </TableCell>
+              </TableRow>
+            ))}
+            {products.length === 0 && (
+              <TableRow>
+                <TableCell
+                  colSpan={6}
+                  className="py-16 text-center text-muted-foreground"
+                >
+                  Nenhum produto cadastrado.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </Card>
+    </>
   );
 }
 

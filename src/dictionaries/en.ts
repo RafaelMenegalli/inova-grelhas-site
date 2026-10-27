@@ -93,6 +93,8 @@ export const en: Dictionary = {
     quote: "Get a Quote",
     withScreen: "with screen",
     imageAlt: "Linear drain",
+    countOne: "{n} product in the catalog",
+    countMany: "{n} products in the catalog",
     details: "View Details",
     variations: "Options",
     quoteWhatsapp: "Get a Quote on WhatsApp",

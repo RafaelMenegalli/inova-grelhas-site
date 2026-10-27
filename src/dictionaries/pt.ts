@@ -92,6 +92,8 @@ export const pt = {
     quote: "Fazer Orçamento",
     withScreen: "com tela",
     imageAlt: "Ralo linear",
+    countOne: "{n} produto no catálogo",
+    countMany: "{n} produtos no catálogo",
     details: "Ver Detalhes",
     variations: "Variações",
     quoteWhatsapp: "Fazer Orçamento no WhatsApp",
