@@ -1,4 +1,4 @@
-import { ProductCard } from "@/components/landing/product-card";
+import { ProductCarousel } from "@/components/landing/product-carousel";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getDictionary, type Lang } from "@/dictionaries";
 import { getActiveProducts } from "@/lib/products";
@@ -17,19 +17,15 @@ export async function ProductShowcase({ lang }: { lang: Lang }) {
   }
 
   return (
-    <ul className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-      {products.map((product) => (
-        <li key={product.id}>
-          <ProductCard
-            product={product}
-            labels={t.catalog}
-            quoteHref={whatsappLink(
-              t.whatsapp.product.replace("{name}", product.name),
-            )}
-          />
-        </li>
-      ))}
-    </ul>
+    <ProductCarousel
+      labels={t.catalog}
+      items={products.map((product) => ({
+        product,
+        quoteHref: whatsappLink(
+          t.whatsapp.product.replace("{name}", product.name),
+        ),
+      }))}
+    />
   );
 }
 
