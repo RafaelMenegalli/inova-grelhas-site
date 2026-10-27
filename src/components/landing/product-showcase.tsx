@@ -33,7 +33,7 @@ export async function ProductShowcase({ lang }: { lang: Lang }) {
         const message = t.whatsapp.product.replace("{name}", product.name);
         return (
           <li key={product.id}>
-            <Card className="h-full gap-0 overflow-hidden border-slate-200 py-0 shadow-sm transition-shadow hover:shadow-xl">
+            <Card className="h-full gap-0 overflow-hidden border-slate-200 py-0 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
               <div className="relative aspect-[4/3] bg-gradient-to-br from-slate-100 to-slate-200">
                 <Image
                   src={product.imageUrl}
