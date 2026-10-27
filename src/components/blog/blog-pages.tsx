@@ -4,11 +4,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import {
-  ArrowDown,
   ArrowLeft,
   ArrowRight,
   MessageCircle,
-  Star,
 } from "lucide-react";
 import { BlogShell } from "@/components/blog/blog-shell";
 import { copy } from "@/components/blog/copy";
@@ -200,8 +198,8 @@ function CategoryShelf({
   );
 }
 
-/** Card clicável do artigo mais recente, exibido na Hero. */
-function FeaturedCard({
+/** Hero: o artigo mais recente em destaque, com a capa ao fundo, título e resumo. */
+function HeroFeatured({
   article,
   locale,
 }: {
@@ -212,33 +210,32 @@ function FeaturedCard({
   return (
     <Link
       href={blogPath(locale, article.slug)}
-      className="group relative block aspect-[16/10] overflow-hidden rounded-2xl border border-sky-400/20 shadow-2xl shadow-black/60 outline-none transition-transform duration-300 hover:scale-[1.02] focus-visible:ring-4 focus-visible:ring-sky-400/60 lg:aspect-[4/3]"
+      className="group relative block min-h-[26rem] overflow-hidden bg-slate-900 outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-sky-400/60 sm:min-h-[30rem] lg:min-h-[36rem]"
     >
       <Image
         src={article.coverImage}
-        alt={article.title}
+        alt=""
         fill
         priority
         quality={90}
-        sizes="(min-width: 1280px) 520px, (min-width: 1024px) 42vw, 100vw"
-        className="object-cover"
+        sizes="(min-width: 1024px) 66vw, 100vw"
+        className="object-cover transition-transform duration-700 group-hover:scale-105"
       />
       <div
         aria-hidden
-        className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"
+        className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/50 to-slate-950/10"
       />
-      <div className="absolute inset-x-0 bottom-0 p-5 sm:p-7">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-white ring-1 ring-white/20">
-          <Star
-            className="size-3.5 fill-amber-300 text-amber-300"
-            aria-hidden
-          />
-          {t.latest}
-        </span>
-        <h2 className="mt-3 text-balance text-2xl font-bold leading-tight tracking-tight text-white sm:text-3xl">
+      <div className="absolute inset-x-0 bottom-0 p-6 sm:p-10 lg:p-14">
+        <Badge className="bg-primary text-primary-foreground hover:bg-primary">
+          {categoryLabel(article.category, locale)}
+        </Badge>
+        <h2 className="mt-4 max-w-3xl text-balance text-3xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-4xl lg:text-5xl">
           {article.title}
         </h2>
-        <span className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-sky-300">
+        <p className="mt-4 line-clamp-3 max-w-2xl text-base leading-relaxed text-slate-200 sm:text-lg">
+          {article.excerpt}
+        </p>
+        <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-sky-300">
           {t.read}
           <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
         </span>
@@ -247,11 +244,67 @@ function FeaturedCard({
   );
 }
 
+/** Hero: os artigos mais lidos, numerados, num painel na cor da marca. */
+function HeroMostRead({
+  articles,
+  locale,
+}: {
+  articles: ArticleView[];
+  locale: Locale;
+}) {
+  const t = copy[locale];
+  return (
+    <aside
+      aria-labelledby="hero-most-read"
+      className="bg-primary p-6 text-primary-foreground sm:p-10 lg:p-12"
+    >
+      <h2
+        id="hero-most-read"
+        className="text-sm font-bold uppercase tracking-widest"
+      >
+        {t.mostReadShort}
+      </h2>
+      <ol className="mt-6 divide-y divide-white/25">
+        {articles.map((a, i) => (
+          <li key={a.slug} className="py-5 first:pt-0 last:pb-0">
+            <Link
+              href={blogPath(locale, a.slug)}
+              className="group flex gap-4 outline-none focus-visible:ring-2 focus-visible:ring-white"
+            >
+              <span
+                aria-hidden
+                className="flex size-12 shrink-0 items-center justify-center bg-white text-2xl font-extrabold text-primary"
+              >
+                {i + 1}
+              </span>
+              <span className="min-w-0">
+                <span className="block text-xs font-bold uppercase tracking-wider text-white/80">
+                  {categoryLabel(a.category, locale)}
+                </span>
+                <span className="mt-1 line-clamp-3 block text-lg font-semibold leading-snug group-hover:underline">
+                  {a.title}
+                </span>
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ol>
+    </aside>
+  );
+}
+
 export async function BlogIndexPage({ locale }: { locale: Locale }) {
   const t = copy[locale];
   const articles = await getPublishedArticles(locale);
   // O mais recente ganha destaque na Hero e também continua na listagem.
   const featured = articles[0];
+  // Mais lidos (por visualizações; empate cai para o mais recente), sem repetir o destaque.
+  const mostRead = articles
+    .slice(1)
+    .map((a, index) => ({ a, index }))
+    .sort((x, y) => y.a.views - x.a.views || x.index - y.index)
+    .slice(0, 3)
+    .map(({ a }) => a);
   // Últimos lançamentos: do 2º ao 4º artigo, em lista horizontal.
   const latest = articles.slice(1, 4);
   // Prateleiras por categoria: o restante (do 5º em diante) mais o artigo em
@@ -262,56 +315,20 @@ export async function BlogIndexPage({ locale }: { locale: Locale }) {
 
   return (
     <BlogShell locale={locale}>
-      <section className="relative isolate overflow-hidden bg-slate-950 pb-16 text-white sm:pb-24">
-        {/* Iluminação no topo; a base da seção é um corte reto, sem fade. */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60%_55%_at_15%_0%,rgba(56,189,248,0.16),transparent_70%)]"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -left-40 -top-40 -z-10 size-[34rem] rounded-full bg-sky-500/15 blur-3xl"
-        />
-
-        <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-8 px-4 py-12 md:px-8 md:py-16 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-7">
-            <span className="mb-4 block text-xs font-semibold uppercase tracking-widest text-sky-400">
-              {t.badge}
-            </span>
-            <h1 className="text-balance text-4xl font-extrabold leading-tight tracking-tight text-white md:text-5xl lg:text-6xl">
-              {t.heading}
-            </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-300">
-              {t.subheading}
-            </p>
-            <Button asChild size="lg" className="mt-8 h-12 px-6 text-base">
-              <a href="#artigos">
-                {t.explore}
-                <ArrowDown />
-              </a>
-            </Button>
-          </div>
-
-          <div className="lg:col-span-5">
-            {featured ? (
-              <FeaturedCard article={featured} locale={locale} />
-            ) : (
-              // Sem artigos publicados ainda: mantém o banner institucional.
-              <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-sky-400/20 shadow-2xl shadow-black/60 lg:aspect-[4/3]">
-                <Image
-                  src="/blog-banner.jpg"
-                  alt={t.bannerAlt}
-                  fill
-                  priority
-                  quality={90}
-                  sizes="(min-width: 1280px) 520px, (min-width: 1024px) 42vw, 100vw"
-                  className="object-cover object-[60%_65%]"
-                />
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
+      <h1 className="sr-only">{t.eyebrow}</h1>
+      {featured && (
+        // Hero montada com artigos: o mais recente em destaque e os mais lidos ao lado.
+        <section
+          className={
+            mostRead.length > 0 ? "grid lg:grid-cols-[2fr_1fr]" : undefined
+          }
+        >
+          <HeroFeatured article={featured} locale={locale} />
+          {mostRead.length > 0 && (
+            <HeroMostRead articles={mostRead} locale={locale} />
+          )}
+        </section>
+      )}
 
       <main id="artigos">
         {articles.length === 0 ? (

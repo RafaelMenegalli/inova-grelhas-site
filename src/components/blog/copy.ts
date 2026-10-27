@@ -6,21 +6,12 @@ export const copy = {
     dateLocale: "pt-BR",
     ogLocale: "pt_BR",
     eyebrow: "Blog",
-    badge: "Dicas e guias",
-    explore: "Explorar artigos",
-    latest: "Artigo em destaque",
     latestTitle: "Últimos lançamentos",
     categoriesTitle: "Explorar por categorias",
-    bannerAlt:
-      "Ralo linear em inox escovado instalado na borda de uma piscina, ao entardecer",
-    heading: "Dicas, guias e ideias para banheiros, áreas externas e obras",
-    subheading:
-      "Artigos práticos para você planejar, instalar e cuidar bem do seu espaço, direto de quem fabrica.",
     metaTitle:
       "Blog | Dicas e Guias para Banheiros e Áreas Externas | Inova Grelhas Lineares",
     metaDescription:
       "Artigos práticos sobre banheiros, áreas externas, piscinas e obras: como escolher, instalar e cuidar, direto de quem fabrica ralos e grelhas lineares em inox.",
-    featured: "Em destaque",
     read: "Ler artigo",
     readTime: (min: number) => `${min} min de leitura`,
     empty: "Em breve publicaremos nossos primeiros artigos.",
@@ -30,6 +21,7 @@ export const copy = {
     stickyText: "Gostou dos produtos?",
     stickyButton: "Ver Catálogo",
     mostRead: "🔥 Mais Lidos",
+    mostReadShort: "Mais lidas",
     ctaTitle: "Pronto para especificar o seu ralo linear?",
     ctaText:
       "Fale direto com a fábrica e receba um orçamento para a sua obra ou projeto.",
@@ -42,22 +34,14 @@ export const copy = {
     dateLocale: "en-US",
     ogLocale: "en_US",
     eyebrow: "Blog",
-    badge: "Tips & guides",
-    explore: "Explore articles",
-    latest: "Featured article",
     latestTitle: "Latest releases",
     categoriesTitle: "Browse by category",
-    bannerAlt:
-      "Brushed stainless steel linear drain along the edge of a swimming pool at dusk",
     heading:
       "Tips, guides and ideas for bathrooms, outdoor areas and building projects",
-    subheading:
-      "Practical articles to help you plan, install and care for your space, straight from the people who make the products.",
     metaTitle:
       "Blog | Tips & Guides for Bathrooms and Outdoor Areas | Inova Grelhas Lineares",
     metaDescription:
       "Practical articles on bathrooms, outdoor areas, pools and building projects: how to choose, install and care, straight from the makers of stainless steel linear drains and grates.",
-    featured: "Featured",
     read: "Read article",
     readTime: (min: number) => `${min} min read`,
     empty: "Our first articles are coming soon.",
@@ -67,6 +51,7 @@ export const copy = {
     stickyText: "Like the products?",
     stickyButton: "View Catalog",
     mostRead: "🔥 Most Read",
+    mostReadShort: "Most read",
     ctaTitle: "Ready to specify your linear drain?",
     ctaText: "Talk directly to the factory and get a quote for your project.",
     ctaButton: "Chat on WhatsApp",
