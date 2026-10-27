@@ -410,6 +410,11 @@ async function ArticleContent({
   if (!article) notFound();
 
   const t = copy[locale];
+  // Próximo = o seguinte na ordem da listagem (mais antigo); no último, volta ao mais recente.
+  const all = await getPublishedArticles(locale);
+  const index = all.findIndex((a) => a.slug === slug);
+  const next =
+    all.length > 1 && index !== -1 ? all[(index + 1) % all.length] : null;
   const minutes = Math.max(
     1,
     Math.round(htmlToText(article.content).split(" ").length / 200),
@@ -488,6 +493,31 @@ async function ArticleContent({
         className="prose prose-lg prose-slate dark:prose-invert mx-auto mt-12 max-w-[70ch] px-5 prose-headings:font-bold prose-headings:tracking-tight prose-p:leading-8 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-blockquote:border-primary prose-img:rounded-xl prose-img:shadow-lg"
         dangerouslySetInnerHTML={{ __html: article.content }}
       />
+
+      <nav
+        aria-label={t.back}
+        className="mx-auto mt-14 flex max-w-[70ch] flex-col gap-3 px-5 sm:flex-row sm:items-stretch sm:justify-between"
+      >
+        <Button
+          asChild
+          variant="outline"
+          size="lg"
+          className="h-12 px-6 text-base"
+        >
+          <Link href={blogPath(locale)}>
+            <ArrowLeft />
+            {t.back}
+          </Link>
+        </Button>
+        {next && (
+          <Button asChild size="lg" className="h-12 px-6 text-base">
+            <Link href={blogPath(locale, next.slug)} title={next.title}>
+              {t.nextArticle}
+              <ArrowRight />
+            </Link>
+          </Button>
+        )}
+      </nav>
 
       <aside className="mx-auto mt-16 max-w-3xl px-5 pb-20 sm:pb-28">
         <div className="rounded-xl bg-gradient-to-br from-slate-900 to-sky-950 p-8 text-white shadow-2xl sm:p-12">
