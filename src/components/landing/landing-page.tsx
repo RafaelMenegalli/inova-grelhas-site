@@ -22,7 +22,6 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { Gtm } from "@/components/site/gtm";
 import { SiteHeader } from "@/components/site/header";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { getDictionary, homePath, type Lang } from "@/dictionaries";
 import { site, whatsappLink } from "@/lib/site";
 
@@ -160,8 +159,8 @@ export function LandingPage({ lang }: { lang: Lang }) {
         {/* Sobre */}
         <ScrollReveal>
           <section id="sobre" className="bg-white px-5 py-20 sm:py-28">
-            <div className="mx-auto max-w-6xl">
-              <div className="max-w-2xl">
+            <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-16">
+              <div className="lg:col-span-5">
                 <p className="text-sm font-semibold uppercase tracking-widest text-primary">
                   {about.eyebrow}
                 </p>
@@ -172,24 +171,31 @@ export function LandingPage({ lang }: { lang: Lang }) {
                   {about.text}
                 </p>
               </div>
-              <ul className="mt-14 grid gap-6 md:grid-cols-3">
+              <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:col-span-7">
                 {about.differentials.map(({ title: t, text }, i) => {
                   const Icon = differentialIcons[i];
                   return (
-                    <li key={t}>
-                      <Card className="h-full border-slate-200 bg-slate-50 shadow-none">
-                        <CardContent className="flex flex-col gap-4 p-2">
-                          <span className="flex size-12 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-                            <Icon className="size-6" aria-hidden />
-                          </span>
-                          <h3 className="text-lg font-semibold text-slate-900">
+                    <li
+                      key={t}
+                      className={i === 0 ? "sm:col-span-2" : undefined}
+                    >
+                      <div
+                        className={`flex h-full flex-col gap-5 rounded-3xl border border-slate-200/60 bg-white p-8 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-primary/10 ${
+                          i === 0 ? "sm:flex-row sm:items-start sm:gap-6" : ""
+                        }`}
+                      >
+                        <span className="flex w-fit shrink-0 items-center justify-center rounded-2xl bg-primary/10 p-4 text-primary">
+                          <Icon className="size-8" aria-hidden />
+                        </span>
+                        <div>
+                          <h3 className="mb-3 text-xl font-bold text-slate-900">
                             {t}
                           </h3>
-                          <p className="leading-relaxed text-slate-600">
+                          <p className="text-sm leading-relaxed text-slate-600">
                             {text}
                           </p>
-                        </CardContent>
-                      </Card>
+                        </div>
+                      </div>
                     </li>
                   );
                 })}
