@@ -38,6 +38,7 @@ export const pt = {
     mainLabel: "Principal",
     mobileLabel: "Mobile",
     language: "Idioma",
+    switchTo: "Mudar para English",
   },
   hero: {
     badge: "Fábrica em Santa Bárbara d'Oeste, SP",

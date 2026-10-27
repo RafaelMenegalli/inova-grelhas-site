@@ -39,6 +39,7 @@ export const en: Dictionary = {
     mainLabel: "Main",
     mobileLabel: "Mobile",
     language: "Language",
+    switchTo: "Switch to Português",
   },
   hero: {
     badge: "Factory in Santa Bárbara d'Oeste, SP, Brazil",

@@ -2,15 +2,9 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Check, Globe, Menu, MessageCircle } from "lucide-react";
+import { Globe, Menu, MessageCircle } from "lucide-react";
 import { BrandLogo } from "@/components/site/brand-logo";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Sheet,
   SheetContent,
@@ -42,6 +36,7 @@ type Props = {
 
 export function SiteHeader({ lang, nav, quoteHref, switchHrefs }: Props) {
   const [open, setOpen] = useState(false);
+  const other = LANGUAGES.find((l) => l.lang !== lang) ?? LANGUAGES[0];
   const switchTo = switchHrefs ?? { pt: homePath("pt"), en: homePath("en") };
 
   const links = [
@@ -72,36 +67,23 @@ export function SiteHeader({ lang, nav, quoteHref, switchHrefs }: Props) {
             </Link>
           ))}
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-9 gap-1.5 px-2 text-slate-300 hover:bg-white/10 hover:text-white"
-                aria-label={nav.language}
-              >
-                <Globe aria-hidden />
-                {lang.toUpperCase()}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="min-w-36">
-              {LANGUAGES.map((l) => (
-                <DropdownMenuItem key={l.lang} asChild>
-                  <Link
-                    href={switchTo[l.lang]}
-                    hrefLang={l.hrefLang}
-                    lang={l.hrefLang}
-                    className="justify-between"
-                  >
-                    {l.label}
-                    {l.lang === lang && (
-                      <Check className="size-4" aria-hidden />
-                    )}
-                  </Link>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Button
+            asChild
+            variant="ghost"
+            size="sm"
+            className="h-9 gap-1.5 px-2 text-slate-300 hover:bg-white/10 hover:text-white"
+          >
+            <Link
+              href={switchTo[other.lang]}
+              hrefLang={other.hrefLang}
+              lang={other.hrefLang}
+              aria-label={nav.switchTo}
+              title={nav.switchTo}
+            >
+              <Globe aria-hidden />
+              {other.lang.toUpperCase()}
+            </Link>
+          </Button>
 
           <Button asChild size="lg" className="h-9 px-4">
             <a href={quoteHref} target="_blank" rel="noopener noreferrer">
