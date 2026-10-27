@@ -7,7 +7,6 @@ import {
   ArrowDown,
   ArrowLeft,
   ArrowRight,
-  Eye,
   Languages,
   MessageCircle,
   Star,
@@ -584,10 +583,6 @@ async function ArticleContent({
                     )}
                     <span className="line-clamp-2 font-semibold leading-snug text-slate-900 group-hover:text-primary">
                       {a.title}
-                    </span>
-                    <span className="mt-1 inline-flex items-center gap-1.5 text-xs text-slate-500">
-                      <Eye className="size-3.5" aria-hidden />
-                      {t.views(a.views)}
                     </span>
                   </span>
                 </Link>
