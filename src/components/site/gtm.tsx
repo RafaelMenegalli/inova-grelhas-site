@@ -1,6 +1,7 @@
 import Script from "next/script";
 
-const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID;
+// O ID do GTM é público; o padrão garante a tag mesmo sem a variável na Vercel.
+const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || "GTM-KTKW3QTM";
 
 /** Google Tag Manager: renderizado só nas páginas públicas (nunca no /admin). */
 export function Gtm() {
