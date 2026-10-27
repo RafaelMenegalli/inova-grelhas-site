@@ -3,7 +3,6 @@ import { Languages } from "lucide-react";
 import { copy } from "@/components/blog/copy";
 import { SiteFooter } from "@/components/site/footer";
 import { Gtm } from "@/components/site/gtm";
-import { WhatsAppFloat } from "@/components/site/whatsapp-float";
 import { SiteHeader } from "@/components/site/header";
 import { blogPath, type Locale } from "@/lib/articles";
 import { blogHomePath, getDictionary } from "@/dictionaries";
@@ -19,7 +18,7 @@ export function BlogShell({
   locale: Locale;
   /** Exibe a faixa de troca de idioma (artigos têm o próprio link para o mesmo slug). */
   localeBar?: boolean;
-  /** A página tem a barra fixa de CTA no celular: o rodapé e o botão do WhatsApp sobem para não ficar atrás dela. */
+  /** A página tem a barra fixa de CTA no celular: o rodapé ganha espaço para não ficar atrás dela. */
   mobileCta?: boolean;
   children: React.ReactNode;
 }) {
@@ -55,11 +54,6 @@ export function BlogShell({
         lang={locale}
         quoteHref={quote}
         className={mobileCta ? "pb-28 md:pb-10" : undefined}
-      />
-      <WhatsAppFloat
-        message={dict.whatsapp.blog}
-        label={dict.nav.whatsappFloat}
-        raisedOnMobile={mobileCta}
       />
     </div>
   );
