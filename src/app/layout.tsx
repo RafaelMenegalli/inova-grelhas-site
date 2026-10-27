@@ -17,11 +17,14 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   icons: {
+    // /icon.png tem 192x192 (múltiplo de 48 px, como o Google exige para a SERP).
+    // O /favicon.ico fica como reserva para navegadores e robôs que o pedem direto.
     icon: [
+      { url: "/icon.png", type: "image/png", sizes: "192x192" },
       { url: "/favicon.ico", sizes: "any" },
-      { url: "/icon.png", type: "image/png" },
     ],
-    apple: "/icon.png",
+    shortcut: "/icon.png",
+    apple: { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
   },
   title: { default: site.name, template: `%s | ${site.name}` },
 };
