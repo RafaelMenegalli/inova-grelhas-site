@@ -363,9 +363,14 @@ export async function articleMetadata(
   if (!article) return { title: "Not found", robots: { index: false } };
 
   const path = blogPath(locale, slug);
+  // Descrição de ~150 caracteres, tamanho que o Google costuma exibir.
+  const description =
+    article.excerpt.length > 150
+      ? `${article.excerpt.slice(0, 149).trimEnd()}…`
+      : article.excerpt;
   return {
     title: article.title,
-    description: article.excerpt,
+    description,
     alternates: {
       canonical: path,
       languages: {
@@ -379,14 +384,14 @@ export async function articleMetadata(
       url: path,
       siteName: site.name,
       title: article.title,
-      description: article.excerpt,
+      description,
       publishedTime: article.createdAt.toISOString(),
       images: [{ url: article.coverImage }],
     },
     twitter: {
       card: "summary_large_image",
       title: article.title,
-      description: article.excerpt,
+      description,
       images: [article.coverImage],
     },
   };

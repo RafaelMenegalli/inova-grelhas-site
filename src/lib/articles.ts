@@ -91,3 +91,24 @@ export async function getPublishedSlugs() {
   });
   return rows.map((r) => r.slug);
 }
+
+/** Slugs e datas de atualização dos artigos publicados e do último produto ativo (sitemap). */
+export async function getSitemapData() {
+  "use cache";
+  cacheTag("articles", "products");
+  cacheLife(publicContentLife);
+
+  const [articles, product] = await Promise.all([
+    prisma.article.findMany({
+      where: { isPublished: true },
+      select: { slug: true, updatedAt: true },
+      orderBy: { updatedAt: "desc" },
+    }),
+    prisma.product.findFirst({
+      where: { isActive: true },
+      select: { updatedAt: true },
+      orderBy: { updatedAt: "desc" },
+    }),
+  ]);
+  return { articles, productsUpdatedAt: product?.updatedAt ?? null };
+}

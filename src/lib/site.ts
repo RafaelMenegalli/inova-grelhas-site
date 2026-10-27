@@ -2,7 +2,13 @@ import { buildWhatsAppUrl } from "@/lib/whatsapp";
 
 export const site = {
   name: "Inova Grelhas Lineares",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  // Em produção sem a variável, usa o domínio da Vercel (nunca localhost no sitemap).
+  url: (
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : "http://localhost:3000")
+  ).replace(/\/$/, ""),
   // Formato internacional, só dígitos (ex.: 5519999999999).
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "5519992950901",
   // Vídeo vertical 9:16 do hero (tour da fábrica / instalação). Opcional.
