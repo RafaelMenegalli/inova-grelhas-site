@@ -19,6 +19,9 @@ export const pt = {
       "Olá! Vi o site da Inova Grelhas Lineares e gostaria de um orçamento.",
     b2b: "Olá! Sou engenheiro/arquiteto/projetista e gostaria de condições para compra em lote de ralos lineares.",
     blog: "Olá! Vi o blog da Inova Grelhas Lineares e gostaria de um orçamento.",
+    // {term} é trocado pelo que o visitante buscou na vitrine.
+    search:
+      'Olá! Procurei por "{term}" no site da Inova Grelhas Lineares e não encontrei. Vocês podem me ajudar?',
     question:
       "Olá! Tenho uma dúvida sobre os ralos lineares da Inova Grelhas Lineares.",
     // {name} é trocado pelo nome oficial do produto.
@@ -99,6 +102,8 @@ export const pt = {
     searchLabel: "Buscar produtos",
     noResults: "Nenhum produto encontrado para “{term}”.",
     clearSearch: "Limpar busca",
+    notFoundTitle: "Não achou o que precisa?",
+    notFoundCta: "Falar no WhatsApp",
     details: "Ver Detalhes",
     variations: "Variações",
     quoteWhatsapp: "Fazer Orçamento no WhatsApp",

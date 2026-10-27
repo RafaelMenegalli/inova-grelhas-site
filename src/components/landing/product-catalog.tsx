@@ -1,12 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { MessageCircle, Search } from "lucide-react";
 import { ProductCarousel } from "@/components/landing/product-carousel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { Dictionary } from "@/dictionaries";
 import type { ProductView } from "@/lib/products";
+import { whatsappLink } from "@/lib/site";
 
 type Item = { product: ProductView; quoteHref: string };
 
@@ -34,9 +35,12 @@ function searchableText(product: ProductView) {
 export function ProductCatalog({
   items,
   labels,
+  searchMessage,
 }: {
   items: Item[];
   labels: Dictionary["catalog"];
+  /** Mensagem do WhatsApp para quem não achou o produto; {term} vira o texto buscado. */
+  searchMessage: string;
 }) {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -93,14 +97,34 @@ export function ProductCatalog({
           <p className="text-lg text-slate-600 dark:text-slate-300">
             {labels.noResults.replace("{term}", searchTerm.trim())}
           </p>
-          <Button
-            type="button"
-            variant="ghost"
-            className="mt-4"
-            onClick={() => setSearchTerm("")}
-          >
-            {labels.clearSearch}
-          </Button>
+          <p className="mt-6 text-xl font-semibold text-slate-900 dark:text-slate-50">
+            {labels.notFoundTitle}
+          </p>
+          <div className="mt-4 flex flex-col items-center justify-center gap-2 sm:flex-row">
+            <Button
+              asChild
+              size="lg"
+              className="h-11 bg-emerald-600 px-6 text-base text-white hover:bg-emerald-700"
+            >
+              <a
+                href={whatsappLink(
+                  searchMessage.replace("{term}", searchTerm.trim()),
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <MessageCircle />
+                {labels.notFoundCta}
+              </a>
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => setSearchTerm("")}
+            >
+              {labels.clearSearch}
+            </Button>
+          </div>
         </div>
       ) : (
         // A chave reinicia o carrossel no primeiro card a cada busca nova.

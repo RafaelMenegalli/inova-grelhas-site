@@ -21,8 +21,10 @@ export const en: Dictionary = {
       "Hello! I visited the Inova Grelhas Lineares website and would like to get a quote.",
     b2b: "Hello! I am an engineer/architect/designer and would like to know your terms for bulk orders of linear drains.",
     blog: "Hello! I read the Inova Grelhas Lineares blog and would like to get a quote.",
+    search:
+      'Hello! I searched for "{term}" on the Inova Grelhas Lineares website and could not find it. Can you help me?',
     question:
-      "Hello! I have a question about the Inova Grelhas Lineares linear drains.",
+      "Olá! Tenho a question about the Inova Grelhas Lineares linear drains.",
     product:
       "Hello, I am interested in the {name} model from Inova Grelhas Lineares. I would like to get a quote.",
   },
@@ -100,6 +102,8 @@ export const en: Dictionary = {
     searchLabel: "Search products",
     noResults: "No products found for “{term}”.",
     clearSearch: "Clear search",
+    notFoundTitle: "Can't find what you need?",
+    notFoundCta: "Chat on WhatsApp",
     details: "View Details",
     variations: "Options",
     quoteWhatsapp: "Get a Quote on WhatsApp",

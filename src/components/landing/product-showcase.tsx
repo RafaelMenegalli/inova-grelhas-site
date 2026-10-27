@@ -19,6 +19,7 @@ export async function ProductShowcase({ lang }: { lang: Lang }) {
   return (
     <ProductCatalog
       labels={t.catalog}
+      searchMessage={t.whatsapp.search}
       items={products.map((product) => ({
         product,
         quoteHref: whatsappLink(
