@@ -13,6 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { requireAdmin } from "@/lib/auth";
+import { productImages } from "@/lib/product-images";
 import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/utils";
 import { ProductActions } from "./product-actions";
@@ -24,6 +25,7 @@ async function ProductsTable() {
     select: {
       id: true,
       name: true,
+      images: true,
       imageUrl: true,
       isActive: true,
       createdAt: true,
@@ -52,7 +54,7 @@ async function ProductsTable() {
             >
               <TableCell className="py-3 pl-6">
                 <Image
-                  src={p.imageUrl}
+                  src={productImages(p)[0]}
                   alt={p.name}
                   width={48}
                   height={48}

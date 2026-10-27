@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { PageHeader } from "@/components/admin/fields";
 import { Skeleton } from "@/components/ui/skeleton";
 import { requireAdmin } from "@/lib/auth";
+import { productImages } from "@/lib/product-images";
 import { prisma } from "@/lib/prisma";
 import { updateProduct } from "../../../actions";
 import { ProductForm } from "../../product-form";
@@ -21,6 +22,7 @@ async function EditProductForm({
       id: true,
       name: true,
       description: true,
+      images: true,
       imageUrl: true,
       variations: {
         orderBy: { createdAt: "asc" },
@@ -39,7 +41,7 @@ async function EditProductForm({
   return (
     <ProductForm
       action={updateProduct.bind(null, product.id)}
-      initial={product}
+      initial={{ ...product, images: productImages(product) }}
     />
   );
 }

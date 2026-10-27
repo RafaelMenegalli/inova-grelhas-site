@@ -93,6 +93,10 @@ export const en: Dictionary = {
     quote: "Get a Quote",
     withScreen: "with screen",
     imageAlt: "Linear drain",
+    details: "View Details",
+    variations: "Options",
+    quoteWhatsapp: "Get a Quote on WhatsApp",
+    photo: "Photo {n} of {total}",
   },
   socialProof: {
     eyebrow: "Social proof",

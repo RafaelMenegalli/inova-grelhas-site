@@ -1,6 +1,8 @@
 import { randomUUID } from "node:crypto";
 
-export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+import { MAX_IMAGE_BYTES } from "@/lib/storage-limits";
+
+export { MAX_IMAGE_BYTES };
 
 const EXTENSIONS: Record<string, string> = {
   "image/jpeg": "jpg",

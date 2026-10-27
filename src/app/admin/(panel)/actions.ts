@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth";
 import { normalizeCategory } from "@/lib/categories";
 import { htmlToText } from "@/lib/content-format";
+import { MAX_PRODUCT_IMAGES, productImages } from "@/lib/product-images";
 import { prisma } from "@/lib/prisma";
 import { toSafeHtml } from "@/lib/sanitize";
 import {
@@ -35,6 +36,77 @@ function contentImages(...htmls: string[]) {
     }
   }
   return urls;
+}
+
+type ImageStep = { url: string } | { file: File };
+
+/**
+ * Monta a lista final de fotos a partir do formulário. O campo `imageOrder` traz a ordem
+ * escolhida: "keep:<url>" para uma foto já salva (só vale se for deste produto) e "new:<n>"
+ * para o n-ésimo arquivo enviado. A primeira da lista é a foto principal.
+ */
+function planProductImages(formData: FormData, current: string[]) {
+  const files = formData
+    .getAll("images")
+    .filter((f): f is File => f instanceof File && f.size > 0);
+  const plan: ImageStep[] = [];
+  const usedUrls = new Set<string>();
+  const usedFiles = new Set<number>();
+
+  for (const token of formData.getAll("imageOrder").map(String)) {
+    if (token.startsWith("keep:")) {
+      const url = token.slice(5);
+      if (current.includes(url) && !usedUrls.has(url)) {
+        usedUrls.add(url);
+        plan.push({ url });
+      }
+    } else if (token.startsWith("new:")) {
+      const index = Number(token.slice(4));
+      if (Number.isInteger(index) && files[index] && !usedFiles.has(index)) {
+        usedFiles.add(index);
+        plan.push({ file: files[index] });
+      }
+    }
+  }
+  return plan;
+}
+
+/** Confere quantidade, formato e tamanho das fotos; devolve a mensagem de erro, se houver. */
+function checkProductImages(plan: ImageStep[]) {
+  if (plan.length === 0) return "Envie ao menos uma foto do ralo.";
+  if (plan.length > MAX_PRODUCT_IMAGES) {
+    return `Cada produto aceita no máximo ${MAX_PRODUCT_IMAGES} fotos.`;
+  }
+  for (const step of plan) {
+    if (!("file" in step)) continue;
+    const error = validateImage(step.file, `a foto "${step.file.name}"`);
+    if (error) return error;
+  }
+  return null;
+}
+
+/**
+ * Envia as fotos novas do plano e devolve a lista final de URLs, na ordem do plano.
+ * Se um envio falhar, apaga as que já subiram e relança o erro.
+ */
+async function applyProductImages(plan: ImageStep[]) {
+  const uploaded: string[] = [];
+  const urls: string[] = [];
+  try {
+    for (const step of plan) {
+      if ("url" in step) {
+        urls.push(step.url);
+        continue;
+      }
+      const url = await uploadImage(step.file, "products");
+      uploaded.push(url);
+      urls.push(url);
+    }
+  } catch (e) {
+    await Promise.all(uploaded.map(deleteImage));
+    throw e;
+  }
+  return { urls, uploaded };
 }
 
 /** Atualiza o cache e as páginas públicas que mostram produtos. */
@@ -103,30 +175,33 @@ export async function createProduct(
 ): Promise<FormState> {
   await requireAdmin();
   const name = text(formData, "name");
-  const description = text(formData, "description");
+  const description = toSafeHtml(text(formData, "description"));
   if (!name) return { error: "Informe o nome do produto." };
-  if (!description) return { error: "Informe a descrição do produto." };
+  if (!hasText(description)) {
+    return { error: "Informe a descrição do produto." };
+  }
 
-  const image = formData.get("image");
-  const imageError = validateImage(image, "a foto do ralo");
-  if (imageError) return { error: imageError };
+  const plan = planProductImages(formData, []);
+  const imagesError = checkProductImages(plan);
+  if (imagesError) return { error: imagesError };
 
   const parsed = parseVariations(formData);
   if ("error" in parsed) return { error: parsed.error };
 
-  let imageUrl: string;
+  let images: string[];
   try {
-    imageUrl = await uploadImage(image as File, "products");
+    ({ urls: images } = await applyProductImages(plan));
   } catch (e) {
     console.error(e);
-    return { error: "Não foi possível enviar a imagem. Tente novamente." };
+    return { error: "Não foi possível enviar as imagens. Tente novamente." };
   }
 
   await prisma.product.create({
     data: {
       name,
       description,
-      imageUrl,
+      images,
+      imageUrl: images[0],
       variations: {
         create: parsed.variations.map(
           ({ size, finish, hasScreen, isActive }) => ({
@@ -153,39 +228,43 @@ export async function updateProduct(
 
   const existing = await prisma.product.findUnique({
     where: { id },
-    select: { imageUrl: true, variations: { select: { id: true } } },
+    select: {
+      images: true,
+      imageUrl: true,
+      variations: { select: { id: true } },
+    },
   });
   if (!existing) return { error: "Produto não encontrado." };
 
   const name = text(formData, "name");
-  const description = text(formData, "description");
+  const description = toSafeHtml(text(formData, "description"));
   if (!name) return { error: "Informe o nome do produto." };
-  if (!description) return { error: "Informe a descrição do produto." };
+  if (!hasText(description)) {
+    return { error: "Informe a descrição do produto." };
+  }
 
   const parsed = parseVariations(formData);
   if ("error" in parsed) return { error: parsed.error };
 
-  // Imagem opcional na edição: sem arquivo novo, mantém a URL salva.
-  const file = formData.get("image");
-  const newFile = file instanceof File && file.size > 0 ? file : null;
-  if (newFile) {
-    const imageError = validateImage(newFile, "a foto do ralo");
-    if (imageError) return { error: imageError };
-  }
+  const current = productImages(existing);
+  const plan = planProductImages(formData, current);
+  const imagesError = checkProductImages(plan);
+  if (imagesError) return { error: imagesError };
 
-  let newImageUrl: string | undefined;
-  if (newFile) {
-    try {
-      newImageUrl = await uploadImage(newFile, "products");
-    } catch (e) {
-      console.error(e);
-      return { error: "Não foi possível enviar a imagem. Tente novamente." };
-    }
+  let images: string[];
+  let uploaded: string[];
+  try {
+    ({ urls: images, uploaded } = await applyProductImages(plan));
+  } catch (e) {
+    console.error(e);
+    return { error: "Não foi possível enviar as imagens. Tente novamente." };
   }
 
   // Só reconhece ids que pertencem a este produto; os demais viram variações novas.
   const ownIds = new Set(existing.variations.map((v) => v.id));
-  const kept = parsed.variations.filter((v) => v.id && ownIds.has(v.id));
+  const keptVariations = parsed.variations.filter(
+    (v) => v.id && ownIds.has(v.id),
+  );
   const added = parsed.variations.filter((v) => !v.id || !ownIds.has(v.id));
 
   try {
@@ -195,13 +274,17 @@ export async function updateProduct(
         data: {
           name,
           description,
-          ...(newImageUrl && { imageUrl: newImageUrl }),
+          images,
+          imageUrl: images[0],
         },
       }),
       prisma.productVariation.deleteMany({
-        where: { productId: id, id: { notIn: kept.map((v) => v.id!) } },
+        where: {
+          productId: id,
+          id: { notIn: keptVariations.map((v) => v.id!) },
+        },
       }),
-      ...kept.map((v) =>
+      ...keptVariations.map((v) =>
         prisma.productVariation.updateMany({
           where: { id: v.id, productId: id },
           data: {
@@ -224,11 +307,14 @@ export async function updateProduct(
     ]);
   } catch (e) {
     console.error(e);
-    if (newImageUrl) await deleteImage(newImageUrl);
+    await Promise.all(uploaded.map(deleteImage));
     return { error: "Não foi possível salvar as alterações. Tente novamente." };
   }
 
-  if (newImageUrl) await deleteImage(existing.imageUrl);
+  // Fotos removidas no formulário saem do storage.
+  await Promise.all(
+    current.filter((url) => !images.includes(url)).map(deleteImage),
+  );
 
   refreshProducts();
   redirect("/admin/produtos");
@@ -261,19 +347,24 @@ export async function duplicateProduct(id: string): Promise<FormState> {
   });
   if (!product) return { error: "Produto não encontrado." };
 
-  let imageUrl: string;
+  // Cada produto precisa dos próprios arquivos (apagar um não pode afetar o outro).
+  const images: string[] = [];
   try {
-    imageUrl = await copyImage(product.imageUrl, "products");
+    for (const url of productImages(product)) {
+      images.push(await copyImage(url, "products"));
+    }
   } catch (e) {
     console.error(e);
-    return { error: "Não foi possível copiar a imagem. Tente novamente." };
+    await Promise.all(images.map(deleteImage));
+    return { error: "Não foi possível copiar as imagens. Tente novamente." };
   }
 
   const copy = await prisma.product.create({
     data: {
       name: `${product.name} (cópia)`,
       description: product.description,
-      imageUrl,
+      images,
+      imageUrl: images[0],
       isActive: false,
       variations: {
         create: product.variations.map(
@@ -296,13 +387,13 @@ export async function deleteProduct(id: string): Promise<FormState> {
   await requireAdmin();
   const product = await prisma.product.findUnique({
     where: { id },
-    select: { imageUrl: true },
+    select: { images: true, imageUrl: true },
   });
   if (!product) return { error: "Produto não encontrado." };
 
   // As variações saem junto (onDelete: Cascade no schema).
   await prisma.product.delete({ where: { id } });
-  await deleteImage(product.imageUrl);
+  await Promise.all(productImages(product).map(deleteImage));
 
   refreshProducts();
   return {};

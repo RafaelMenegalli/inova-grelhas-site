@@ -11,7 +11,10 @@ model Product {
   id          String             @id @default(cuid())
   name        String
   description String
-  imageUrl    String
+  /// Até 5 fotos; a primeira é a principal.
+  images      String[]           @default([])
+  /// Legado (foto única): será removido depois que o deploy novo estiver no ar.
+  imageUrl    String?
   isActive    Boolean            @default(true)
   variations  ProductVariation[]
   createdAt   DateTime           @default(now())

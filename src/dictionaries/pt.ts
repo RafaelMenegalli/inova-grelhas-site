@@ -92,6 +92,10 @@ export const pt = {
     quote: "Fazer Orçamento",
     withScreen: "com tela",
     imageAlt: "Ralo linear",
+    details: "Ver Detalhes",
+    variations: "Variações",
+    quoteWhatsapp: "Fazer Orçamento no WhatsApp",
+    photo: "Foto {n} de {total}",
   },
   socialProof: {
     eyebrow: "Prova social",

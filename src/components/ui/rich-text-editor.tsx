@@ -31,8 +31,11 @@ type Props = {
   value: string;
   /** Recebe o HTML gerado pelo Tiptap a cada alteração. */
   onChange: (html: string) => void;
-  /** Envia a imagem ao storage e devolve a URL pública (lança em caso de erro). */
-  onUploadImage: (file: File) => Promise<string>;
+  /**
+   * Envia a imagem ao storage e devolve a URL pública (lança em caso de erro).
+   * Sem ela, o editor fica só com texto: sem botões de imagem e de produto afiliado.
+   */
+  onUploadImage?: (file: File) => Promise<string>;
   id?: string;
   label?: string;
 };
@@ -83,7 +86,7 @@ function Toolbar({
   onUploadImage,
 }: {
   editor: Editor;
-  onUploadImage: (file: File) => Promise<string>;
+  onUploadImage?: (file: File) => Promise<string>;
 }) {
   const state = useEditorState({
     editor,
@@ -133,7 +136,7 @@ function Toolbar({
   async function onPickImage(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     e.target.value = "";
-    if (!file) return;
+    if (!file || !onUploadImage) return;
     setUploading(true);
     setMessage(null);
     try {
@@ -217,43 +220,49 @@ function Toolbar({
         >
           <Link2 />
         </ToolbarButton>
-        <ToolbarButton
-          label="Inserir imagem"
-          disabled={uploading}
-          onClick={() => fileRef.current?.click()}
-        >
-          {uploading ? <Loader2 className="animate-spin" /> : <ImageIcon />}
-        </ToolbarButton>
-        <ToolbarButton
-          label="Inserir produto afiliado"
-          active={affiliateOpen}
-          onClick={() => setAffiliateOpen(true)}
-        >
-          <ShoppingCart />
-        </ToolbarButton>
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/jpeg,image/png,image/webp,image/avif,image/gif"
-          className="sr-only"
-          tabIndex={-1}
-          aria-hidden
-          onChange={onPickImage}
-        />
+        {onUploadImage && (
+          <>
+            <ToolbarButton
+              label="Inserir imagem"
+              disabled={uploading}
+              onClick={() => fileRef.current?.click()}
+            >
+              {uploading ? <Loader2 className="animate-spin" /> : <ImageIcon />}
+            </ToolbarButton>
+            <ToolbarButton
+              label="Inserir produto afiliado"
+              active={affiliateOpen}
+              onClick={() => setAffiliateOpen(true)}
+            >
+              <ShoppingCart />
+            </ToolbarButton>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/avif,image/gif"
+              className="sr-only"
+              tabIndex={-1}
+              aria-hidden
+              onChange={onPickImage}
+            />
+          </>
+        )}
       </div>
 
-      <AffiliateProductDialog
-        open={affiliateOpen}
-        onOpenChange={setAffiliateOpen}
-        onUploadImage={onUploadImage}
-        onInsert={(attrs) =>
-          editor
-            .chain()
-            .focus()
-            .insertContent({ type: "affiliateProduct", attrs })
-            .run()
-        }
-      />
+      {onUploadImage && (
+        <AffiliateProductDialog
+          open={affiliateOpen}
+          onOpenChange={setAffiliateOpen}
+          onUploadImage={onUploadImage}
+          onInsert={(attrs) =>
+            editor
+              .chain()
+              .focus()
+              .insertContent({ type: "affiliateProduct", attrs })
+              .run()
+          }
+        />
+      )}
 
       {linkOpen && (
         <div className="flex flex-wrap items-center gap-2 border-t bg-white p-2">
@@ -322,8 +331,8 @@ export function RichTextEditor({
         link: false,
       }),
       Link.configure({ openOnClick: false, autolink: true }),
-      Image,
-      AffiliateProduct,
+      // Imagens e cards de afiliado só existem onde há upload (blog); a descrição de produto não os tem.
+      ...(onUploadImage ? [Image, AffiliateProduct] : []),
     ],
     content: value,
     onUpdate: ({ editor: e }) => onChange(e.getHTML()),
