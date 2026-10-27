@@ -33,7 +33,6 @@ export const copy = {
     ctaText:
       "Fale direto com a fábrica e receba um orçamento para a sua obra ou projeto.",
     ctaButton: "Falar no WhatsApp",
-    other: "English",
     cta: (title: string) =>
       `Olá! Li o artigo "${title}" no blog da Inova Grelhas Lineares e gostaria de um orçamento.`,
   },
@@ -69,7 +68,6 @@ export const copy = {
     ctaTitle: "Ready to specify your linear drain?",
     ctaText: "Talk directly to the factory and get a quote for your project.",
     ctaButton: "Chat on WhatsApp",
-    other: "Português",
     cta: (title: string) =>
       `Hello! I read the article "${title}" on the Inova Grelhas Lineares blog and would like a quote.`,
   },

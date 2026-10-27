@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Globe, Menu, MessageCircle } from "lucide-react";
+import { Menu, MessageCircle } from "lucide-react";
 import { BrandLogo } from "@/components/site/brand-logo";
+import { LanguageToggle } from "@/components/site/language-toggle";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,23 +26,18 @@ import {
 const toggleClass =
   "relative size-9 text-slate-300 hover:bg-white/10 hover:text-white";
 
-const LANGUAGES: { lang: Lang; label: string; hrefLang: string }[] = [
-  { lang: "pt", label: "Português", hrefLang: "pt-BR" },
-  { lang: "en", label: "English", hrefLang: "en" },
-];
-
 type Props = {
   lang: Lang;
   nav: Dictionary["nav"];
   quoteHref: string;
-  /** Página equivalente em cada idioma (padrão: a home). */
-  switchHrefs?: Record<Lang, string>;
+  /** Página equivalente no outro idioma (padrão: a página inicial dele). */
+  switchHref?: string;
 };
 
-export function SiteHeader({ lang, nav, quoteHref, switchHrefs }: Props) {
+export function SiteHeader({ lang, nav, quoteHref, switchHref }: Props) {
   const [open, setOpen] = useState(false);
-  const other = LANGUAGES.find((l) => l.lang !== lang) ?? LANGUAGES[0];
-  const switchTo = switchHrefs ?? { pt: homePath("pt"), en: homePath("en") };
+  const otherLang: Lang = lang === "pt" ? "en" : "pt";
+  const switchTo = switchHref ?? homePath(otherLang);
 
   const themeLabels = {
     toggle: nav.theme,
@@ -78,23 +74,12 @@ export function SiteHeader({ lang, nav, quoteHref, switchHrefs }: Props) {
             </Link>
           ))}
 
-          <Button
-            asChild
-            variant="ghost"
-            size="sm"
-            className="h-9 gap-1.5 px-2 text-slate-300 hover:bg-white/10 hover:text-white"
-          >
-            <Link
-              href={switchTo[other.lang]}
-              hrefLang={other.hrefLang}
-              lang={other.hrefLang}
-              aria-label={nav.switchTo}
-              title={nav.switchTo}
-            >
-              <Globe aria-hidden />
-              {other.lang.toUpperCase()}
-            </Link>
-          </Button>
+          <LanguageToggle
+            href={switchTo}
+            target={otherLang}
+            title={nav.switchTo}
+            className="text-slate-300 hover:bg-white/10 hover:text-white"
+          />
 
           <ModeToggle labels={themeLabels} className={toggleClass} />
 
@@ -144,29 +129,15 @@ export function SiteHeader({ lang, nav, quoteHref, switchHrefs }: Props) {
                 </Link>
               ))}
 
-              <div
-                role="group"
-                aria-label={nav.language}
-                className="mt-3 flex items-center gap-2 px-3 text-slate-400"
-              >
-                <Globe className="size-4" aria-hidden />
-                {LANGUAGES.map((l) => (
-                  <Link
-                    key={l.lang}
-                    href={switchTo[l.lang]}
-                    hrefLang={l.hrefLang}
-                    lang={l.hrefLang}
-                    onClick={() => setOpen(false)}
-                    aria-current={l.lang === lang ? "true" : undefined}
-                    className={
-                      l.lang === lang
-                        ? "rounded-md bg-white/10 px-3 py-1.5 text-sm font-semibold text-white"
-                        : "rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10 hover:text-white"
-                    }
-                  >
-                    {l.lang.toUpperCase()}
-                  </Link>
-                ))}
+              <div className="mt-3 px-1">
+                <LanguageToggle
+                  href={switchTo}
+                  target={otherLang}
+                  title={nav.switchTo}
+                  showLabel
+                  onNavigate={() => setOpen(false)}
+                  className="text-base text-slate-200 hover:bg-white/10"
+                />
               </div>
 
               <div className="mt-2 flex items-center gap-2 px-3 text-slate-400">

@@ -7,7 +7,6 @@ import {
   ArrowDown,
   ArrowLeft,
   ArrowRight,
-  Languages,
   MessageCircle,
   Star,
 } from "lucide-react";
@@ -473,14 +472,6 @@ async function ArticleContent({
               <ArrowLeft className="size-4" aria-hidden />
               {t.back}
             </Link>
-            <Link
-              href={blogPath(locale === "pt" ? "en" : "pt", slug)}
-              hrefLang={locale === "pt" ? "en" : "pt-BR"}
-              className="inline-flex items-center gap-2 transition-colors hover:text-primary dark:hover:text-sky-400"
-            >
-              <Languages className="size-4" aria-hidden />
-              {t.other}
-            </Link>
           </div>
           <p className="mt-12 text-center text-xs font-semibold uppercase tracking-widest text-primary dark:text-sky-400 sm:mt-16">
             {formatDate(article.createdAt, locale)}
@@ -615,6 +606,30 @@ async function ArticleContent({
   );
 }
 
+const articleSkeleton = (
+  <div className="mx-auto max-w-3xl space-y-6 px-5 py-16">
+    <Skeleton className="h-12 w-3/4" />
+    <Skeleton className="h-72 w-full rounded-xl" />
+  </div>
+);
+
+/** Moldura + conteúdo do artigo: só aqui o slug é conhecido, e o header leva ao mesmo artigo no outro idioma. */
+async function ArticleWithShell({
+  locale,
+  params,
+}: {
+  locale: Locale;
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const other: Locale = locale === "pt" ? "en" : "pt";
+  return (
+    <BlogShell locale={locale} mobileCta switchHref={blogPath(other, slug)}>
+      <ArticleContent locale={locale} params={params} />
+    </BlogShell>
+  );
+}
+
 export function ArticlePage({
   locale,
   params,
@@ -623,17 +638,14 @@ export function ArticlePage({
   params: Promise<{ slug: string }>;
 }) {
   return (
-    <BlogShell locale={locale} localeBar={false} mobileCta>
-      <Suspense
-        fallback={
-          <div className="mx-auto max-w-3xl space-y-6 px-5 py-16">
-            <Skeleton className="h-12 w-3/4" />
-            <Skeleton className="h-72 w-full rounded-xl" />
-          </div>
-        }
-      >
-        <ArticleContent locale={locale} params={params} />
-      </Suspense>
-    </BlogShell>
+    <Suspense
+      fallback={
+        <BlogShell locale={locale} mobileCta>
+          {articleSkeleton}
+        </BlogShell>
+      }
+    >
+      <ArticleWithShell locale={locale} params={params} />
+    </Suspense>
   );
 }
