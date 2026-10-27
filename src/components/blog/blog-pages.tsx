@@ -7,12 +7,14 @@ import {
   ArrowDown,
   ArrowLeft,
   ArrowRight,
+  Eye,
   Languages,
   MessageCircle,
   Star,
 } from "lucide-react";
 import { BlogShell } from "@/components/blog/blog-shell";
 import { copy } from "@/components/blog/copy";
+import { ViewCounter } from "@/components/blog/view-counter";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { categoryLabel, categoryOrder } from "@/lib/categories";
@@ -21,6 +23,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   blogPath,
   getArticle,
+  getPopularArticles,
   getPublishedArticles,
   getPublishedSlugs,
   type ArticleView,
@@ -411,7 +414,10 @@ async function ArticleContent({
 
   const t = copy[locale];
   // Próximo = o seguinte na ordem da listagem (mais antigo); no último, volta ao mais recente.
-  const all = await getPublishedArticles(locale);
+  const [all, popular] = await Promise.all([
+    getPublishedArticles(locale),
+    getPopularArticles(locale, slug),
+  ]);
   const index = all.findIndex((a) => a.slug === slug);
   const next =
     all.length > 1 && index !== -1 ? all[(index + 1) % all.length] : null;
@@ -434,110 +440,163 @@ async function ArticleContent({
   };
 
   return (
-    <article>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
-        }}
-      />
-      <header className="mx-auto max-w-3xl px-5 pt-12 sm:pt-16">
-        <div className="flex items-center justify-between gap-4 text-sm font-medium text-slate-500">
-          <Link
-            href={blogPath(locale)}
-            className="inline-flex items-center gap-2 transition-colors hover:text-primary"
-          >
-            <ArrowLeft className="size-4" aria-hidden />
-            {t.back}
-          </Link>
-          <Link
-            href={blogPath(locale === "pt" ? "en" : "pt", slug)}
-            hrefLang={locale === "pt" ? "en" : "pt-BR"}
-            className="inline-flex items-center gap-2 transition-colors hover:text-primary"
-          >
-            <Languages className="size-4" aria-hidden />
-            {t.other}
-          </Link>
-        </div>
-        <p className="mt-12 text-center text-xs font-semibold uppercase tracking-widest text-primary sm:mt-16">
-          {formatDate(article.createdAt, locale)}
-          <span aria-hidden className="mx-2 text-slate-300">
-            ·
-          </span>
-          {t.readTime(minutes)}
-        </p>
-        <h1 className="mx-auto mt-5 max-w-3xl text-balance text-center text-4xl font-bold leading-[1.1] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
-          {article.title}
-        </h1>
-      </header>
-
-      <div className="mx-auto mt-12 max-w-5xl px-5 sm:mt-14">
-        <div className="relative aspect-[16/9] overflow-hidden rounded-xl bg-slate-200 shadow-xl">
-          <Image
-            src={article.coverImage}
-            alt={article.title}
-            fill
-            priority
-            sizes="(min-width: 1024px) 64rem, 100vw"
-            className="object-cover"
-          />
-        </div>
-      </div>
-
-      <div className="mx-auto mt-14 max-w-[70ch] px-5 sm:mt-16">
-        <hr className="border-slate-200" />
-      </div>
-
-      {/* HTML já sanitizado no servidor (lib/sanitize.ts) antes de chegar aqui. */}
-      <div
-        className="prose prose-lg prose-slate dark:prose-invert mx-auto mt-12 max-w-[70ch] px-5 prose-headings:font-bold prose-headings:tracking-tight prose-p:leading-8 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-blockquote:border-primary prose-img:rounded-xl prose-img:shadow-lg"
-        dangerouslySetInnerHTML={{ __html: article.content }}
-      />
-
-      <nav
-        aria-label={t.back}
-        className="mx-auto mt-14 flex max-w-[70ch] flex-col gap-3 px-5 sm:flex-row sm:items-stretch sm:justify-between"
+    <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 pb-12 lg:grid-cols-12 lg:gap-12 lg:px-8">
+      <ViewCounter slug={article.slug} />
+      <article
+        className={popular.length > 0 ? "lg:col-span-8" : "lg:col-span-12"}
       >
-        <Button
-          asChild
-          variant="outline"
-          size="lg"
-          className="h-12 px-6 text-base"
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+          }}
+        />
+        <header className="mx-auto max-w-3xl px-5 pt-12 sm:pt-16">
+          <div className="flex items-center justify-between gap-4 text-sm font-medium text-slate-500">
+            <Link
+              href={blogPath(locale)}
+              className="inline-flex items-center gap-2 transition-colors hover:text-primary"
+            >
+              <ArrowLeft className="size-4" aria-hidden />
+              {t.back}
+            </Link>
+            <Link
+              href={blogPath(locale === "pt" ? "en" : "pt", slug)}
+              hrefLang={locale === "pt" ? "en" : "pt-BR"}
+              className="inline-flex items-center gap-2 transition-colors hover:text-primary"
+            >
+              <Languages className="size-4" aria-hidden />
+              {t.other}
+            </Link>
+          </div>
+          <p className="mt-12 text-center text-xs font-semibold uppercase tracking-widest text-primary sm:mt-16">
+            {formatDate(article.createdAt, locale)}
+            <span aria-hidden className="mx-2 text-slate-300">
+              ·
+            </span>
+            {t.readTime(minutes)}
+          </p>
+          <h1 className="mx-auto mt-5 max-w-3xl text-balance text-center text-4xl font-bold leading-[1.1] tracking-tight text-slate-900 sm:text-5xl">
+            {article.title}
+          </h1>
+        </header>
+
+        <div className="mx-auto mt-12 max-w-5xl px-5 sm:mt-14">
+          <div className="relative aspect-[16/9] overflow-hidden rounded-xl bg-slate-200 shadow-xl">
+            <Image
+              src={article.coverImage}
+              alt={article.title}
+              fill
+              priority
+              sizes="(min-width: 1024px) 64rem, 100vw"
+              className="object-cover"
+            />
+          </div>
+        </div>
+
+        <div className="mx-auto mt-14 max-w-[70ch] px-5 sm:mt-16">
+          <hr className="border-slate-200" />
+        </div>
+
+        {/* HTML já sanitizado no servidor (lib/sanitize.ts) antes de chegar aqui. */}
+        <div
+          className="prose prose-lg prose-slate dark:prose-invert mx-auto mt-12 max-w-[70ch] px-5 prose-headings:font-bold prose-headings:tracking-tight prose-p:leading-8 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-blockquote:border-primary prose-img:rounded-xl prose-img:shadow-lg"
+          dangerouslySetInnerHTML={{ __html: article.content }}
+        />
+
+        <nav
+          aria-label={t.back}
+          className="mx-auto mt-14 flex max-w-[70ch] flex-col gap-3 px-5 sm:flex-row sm:items-stretch sm:justify-between"
         >
-          <Link href={blogPath(locale)}>
-            <ArrowLeft />
-            {t.back}
-          </Link>
-        </Button>
-        {next && (
-          <Button asChild size="lg" className="h-12 px-6 text-base">
-            <Link href={blogPath(locale, next.slug)} title={next.title}>
-              {t.nextArticle}
-              <ArrowRight />
+          <Button
+            asChild
+            variant="outline"
+            size="lg"
+            className="h-12 px-6 text-base"
+          >
+            <Link href={blogPath(locale)}>
+              <ArrowLeft />
+              {t.back}
             </Link>
           </Button>
-        )}
-      </nav>
+          {next && (
+            <Button asChild size="lg" className="h-12 px-6 text-base">
+              <Link href={blogPath(locale, next.slug)} title={next.title}>
+                {t.nextArticle}
+                <ArrowRight />
+              </Link>
+            </Button>
+          )}
+        </nav>
 
-      <aside className="mx-auto mt-16 max-w-3xl px-5 pb-20 sm:pb-28">
-        <div className="rounded-xl bg-gradient-to-br from-slate-900 to-sky-950 p-8 text-white shadow-2xl sm:p-12">
-          <h2 className="text-balance text-2xl font-bold tracking-tight sm:text-3xl">
-            {t.ctaTitle}
+        <aside className="mx-auto mt-16 max-w-3xl px-5 pb-20 sm:pb-28">
+          <div className="rounded-xl bg-gradient-to-br from-slate-900 to-sky-950 p-8 text-white shadow-2xl sm:p-12">
+            <h2 className="text-balance text-2xl font-bold tracking-tight sm:text-3xl">
+              {t.ctaTitle}
+            </h2>
+            <p className="mt-3 max-w-xl text-slate-300">{t.ctaText}</p>
+            <Button asChild size="lg" className="mt-8 h-12 px-6 text-base">
+              <a
+                href={whatsappLink(t.cta(article.title))}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <MessageCircle />
+                {t.ctaButton}
+              </a>
+            </Button>
+          </div>
+        </aside>
+      </article>
+
+      {popular.length > 0 && (
+        <aside
+          aria-labelledby="most-read"
+          className="h-fit px-5 pb-12 lg:sticky lg:top-24 lg:mt-16 lg:col-span-4 lg:px-0 lg:pb-0"
+        >
+          <h2
+            id="most-read"
+            className="text-xl font-bold tracking-tight text-slate-900"
+          >
+            {t.mostRead}
           </h2>
-          <p className="mt-3 max-w-xl text-slate-300">{t.ctaText}</p>
-          <Button asChild size="lg" className="mt-8 h-12 px-6 text-base">
-            <a
-              href={whatsappLink(t.cta(article.title))}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <MessageCircle />
-              {t.ctaButton}
-            </a>
-          </Button>
-        </div>
-      </aside>
-    </article>
+          <ul className="mt-5 space-y-3">
+            {popular.map((a) => (
+              <li key={a.slug}>
+                <Link
+                  href={blogPath(locale, a.slug)}
+                  className="group flex gap-4 rounded-xl border border-slate-200 bg-white p-3 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
+                >
+                  <span className="relative size-20 shrink-0 overflow-hidden rounded-md bg-slate-200">
+                    <Image
+                      src={a.coverImage}
+                      alt=""
+                      fill
+                      sizes="80px"
+                      className="object-cover"
+                    />
+                  </span>
+                  <span className="flex min-w-0 flex-1 flex-col justify-center">
+                    {a.category && (
+                      <span className="text-xs font-semibold uppercase tracking-wider text-primary">
+                        {categoryLabel(a.category, locale)}
+                      </span>
+                    )}
+                    <span className="line-clamp-2 font-semibold leading-snug text-slate-900 group-hover:text-primary">
+                      {a.title}
+                    </span>
+                    <span className="mt-1 inline-flex items-center gap-1.5 text-xs text-slate-500">
+                      <Eye className="size-3.5" aria-hidden />
+                      {t.views(a.views)}
+                    </span>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      )}
+    </div>
   );
 }
 

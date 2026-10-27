@@ -13,6 +13,7 @@ export type ArticleView = {
   coverImage: string;
   /** Categoria (nome em português, como salvo no banco). */
   category: string;
+  views: number;
   createdAt: Date;
   /** Resumo (~170 caracteres) para cards e meta description. */
   excerpt: string;
@@ -39,6 +40,7 @@ function toView(
     contentEn: string;
     coverImage: string;
     category: string;
+    views: number;
     createdAt: Date;
   },
   locale: Locale,
@@ -51,6 +53,7 @@ function toView(
     content: toSafeHtml(content),
     coverImage: a.coverImage,
     category: a.category,
+    views: a.views,
     createdAt: a.createdAt,
     excerpt: excerptOf(content),
   };
@@ -111,4 +114,26 @@ export async function getSitemapData() {
     }),
   ]);
   return { articles, productsUpdatedAt: product?.updatedAt ?? null };
+}
+
+/** Artigos mais lidos (sem o atual), para a barra lateral da página do artigo. */
+export async function getPopularArticles(
+  locale: Locale,
+  excludeSlug: string,
+  limit = 5,
+) {
+  "use cache";
+  cacheTag("articles");
+  cacheLife(publicContentLife);
+
+  // Busca um a mais e tira o atual aqui, para o cache não variar por artigo.
+  const rows = await prisma.article.findMany({
+    where: { isPublished: true },
+    orderBy: [{ views: "desc" }, { createdAt: "desc" }],
+    take: limit + 1,
+  });
+  return rows
+    .filter((a) => a.slug !== excludeSlug)
+    .slice(0, limit)
+    .map((a) => ({ ...toView(a, locale), content: "" }));
 }

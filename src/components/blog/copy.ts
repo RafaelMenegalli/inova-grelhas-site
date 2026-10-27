@@ -25,6 +25,8 @@ export const copy = {
     empty: "Em breve publicaremos nossos primeiros artigos.",
     back: "Voltar ao blog",
     nextArticle: "Próximo artigo",
+    mostRead: "🔥 Mais Lidos",
+    views: (n: number) => `${n} ${n === 1 ? "visualização" : "visualizações"}`,
     ctaTitle: "Pronto para especificar o seu ralo linear?",
     ctaText:
       "Fale direto com a fábrica e receba um orçamento para a sua obra ou projeto.",
@@ -58,6 +60,8 @@ export const copy = {
     empty: "Our first articles are coming soon.",
     back: "Back to blog",
     nextArticle: "Next article",
+    mostRead: "🔥 Most Read",
+    views: (n: number) => `${n} ${n === 1 ? "view" : "views"}`,
     ctaTitle: "Ready to specify your linear drain?",
     ctaText: "Talk directly to the factory and get a quote for your project.",
     ctaButton: "Chat on WhatsApp",
