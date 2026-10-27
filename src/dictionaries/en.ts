@@ -158,6 +158,13 @@ export const en: Dictionary = {
       },
     ],
   },
+  location: {
+    eyebrow: "Location",
+    title: "Where We Are",
+    description:
+      "Located in the industrial hub of Santa Bárbara d'Oeste, with streamlined logistics for nationwide shipping.",
+    mapTitle: "Map showing the Inova Grelhas Lineares factory location",
+  },
   footer: {
     about: "Manufacturer of stainless steel linear drains and grates in",
     aboutEnd: "In-house foundry and premium finishing.",

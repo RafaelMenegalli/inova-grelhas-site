@@ -157,6 +157,13 @@ export const pt = {
       },
     ],
   },
+  location: {
+    eyebrow: "Localização",
+    title: "Onde Estamos",
+    description:
+      "Localizados no polo industrial de Santa Bárbara d'Oeste, com logística facilitada para envio a todo o Brasil.",
+    mapTitle: "Mapa com a localização da fábrica da Inova Grelhas Lineares",
+  },
   footer: {
     about: "Fábrica de ralos e grelhas lineares em inox em",
     aboutEnd: "Fundição própria, acabamento de alto padrão.",

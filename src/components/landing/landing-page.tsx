@@ -77,7 +77,7 @@ export function LandingPage({ lang }: { lang: Lang }) {
   const dict = getDictionary(lang);
   const generalQuote = whatsappLink(dict.whatsapp.general);
   const b2bQuote = whatsappLink(dict.whatsapp.b2b);
-  const { hero, about, catalog, b2b } = dict;
+  const { hero, about, catalog, b2b, location } = dict;
 
   return (
     <div lang={dict.meta.htmlLang}>
@@ -232,6 +232,31 @@ export function LandingPage({ lang }: { lang: Lang }) {
           </div>
         </section>
         <FaqSection lang={lang} />
+
+        {/* Localização */}
+        <section id="localizacao" className="bg-white px-5 py-16 md:py-24">
+          <div className="mx-auto max-w-6xl text-center">
+            <p className="text-sm font-semibold uppercase tracking-widest text-primary">
+              {location.eyebrow}
+            </p>
+            <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+              {location.title}
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-slate-600">
+              {location.description}
+            </p>
+          </div>
+          <div className="relative mx-auto mt-8 aspect-square w-full max-w-6xl overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-2xl md:mt-12 md:aspect-[21/9]">
+            <iframe
+              src="https://maps.google.com/maps?q=Rua%20Dr.%20H%C3%A9lio%20Furlan%2C%20Santa%20B%C3%A1rbara%20d'Oeste%20-%20SP%2C%2013458-733&t=&z=15&ie=UTF8&iwloc=&output=embed"
+              title={location.mapTitle}
+              className="absolute inset-0 h-full w-full border-0"
+              allowFullScreen={false}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
+        </section>
       </main>
 
       <SiteFooter lang={lang} quoteHref={generalQuote} />
