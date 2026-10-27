@@ -9,7 +9,7 @@ import {
   ShieldCheck,
   Wrench,
 } from "lucide-react";
-import { HeroVideo } from "@/components/landing/hero-video";
+import { HeroBackground } from "@/components/landing/hero-background";
 import {
   ProductShowcase,
   ProductShowcaseSkeleton,
@@ -97,7 +97,8 @@ export function LandingPage({ lang }: { lang: Lang }) {
       <main>
         {/* Hero */}
         <ScrollReveal>
-          <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-sky-950 px-5 py-16 text-white sm:py-24 lg:py-28">
+          <section className="relative isolate flex min-h-[30rem] items-center overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-sky-950 px-5 py-16 text-white sm:py-24 lg:min-h-[36rem] lg:py-28">
+            <HeroBackground />
             <div
               aria-hidden
               className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:linear-gradient(to_right,white_1px,transparent_1px),linear-gradient(to_bottom,white_1px,transparent_1px)] [background-size:56px_56px]"
@@ -106,8 +107,8 @@ export function LandingPage({ lang }: { lang: Lang }) {
               aria-hidden
               className="pointer-events-none absolute -right-32 -top-32 size-[28rem] rounded-full bg-primary/30 blur-3xl"
             />
-            <div className="relative mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-[1.25fr_1fr] lg:gap-20">
-              <div>
+            <div className="relative mx-auto w-full max-w-6xl">
+              <div className="max-w-2xl">
                 <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-sm font-medium text-slate-200">
                   <MapPin className="size-4 text-sky-400" aria-hidden />
                   {hero.badge}
@@ -147,7 +148,6 @@ export function LandingPage({ lang }: { lang: Lang }) {
                   </Button>
                 </div>
               </div>
-              <HeroVideo lang={lang} />
             </div>
           </section>
         </ScrollReveal>
