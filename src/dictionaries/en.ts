@@ -103,8 +103,10 @@ export const en: Dictionary = {
     searchLabel: "Search products",
     noResults: "No products found for “{term}”.",
     clearSearch: "Clear search",
-    notFoundTitle: "Can't find what you need?",
-    notFoundCta: "Chat on WhatsApp",
+    notFoundTitle: "Didn't find what you were looking for?",
+    notFoundText:
+      "Don't worry! Get in touch with our team on WhatsApp. We'll be happy to help you find the right product for your needs.",
+    notFoundCta: "Chat with us on WhatsApp",
     details: "View Details",
     variations: "Options",
     quoteWhatsapp: "Get a Quote on WhatsApp",

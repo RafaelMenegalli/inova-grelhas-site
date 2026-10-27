@@ -100,6 +100,9 @@ export function ProductCatalog({
           <p className="mt-6 text-xl font-semibold text-slate-900 dark:text-slate-50">
             {labels.notFoundTitle}
           </p>
+          <p className="mx-auto mt-2 max-w-xl leading-relaxed text-slate-600 dark:text-slate-400">
+            {labels.notFoundText}
+          </p>
           <div className="mt-4 flex flex-col items-center justify-center gap-2 sm:flex-row">
             <Button
               asChild

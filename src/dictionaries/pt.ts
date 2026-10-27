@@ -103,8 +103,10 @@ export const pt = {
     searchLabel: "Buscar produtos",
     noResults: "Nenhum produto encontrado para “{term}”.",
     clearSearch: "Limpar busca",
-    notFoundTitle: "Não achou o que precisa?",
-    notFoundCta: "Falar no WhatsApp",
+    notFoundTitle: "Não encontrou o que procurava?",
+    notFoundText:
+      "Não se preocupe! Entre em contato com nossa equipe pelo WhatsApp. Teremos prazer em ajudar você a encontrar o produto ideal para sua necessidade.",
+    notFoundCta: "Fale conosco pelo WhatsApp",
     details: "Ver Detalhes",
     variations: "Variações",
     quoteWhatsapp: "Fazer Orçamento no WhatsApp",
