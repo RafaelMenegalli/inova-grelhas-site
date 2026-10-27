@@ -67,7 +67,7 @@ export function ProofCarousel({
                 <button
                   type="button"
                   aria-label={`${zoomLabel}: ${p.alt}`}
-                  className="group relative block h-72 w-full cursor-zoom-in overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-sm outline-none transition-shadow hover:shadow-lg focus-visible:ring-4 focus-visible:ring-ring/50 lg:h-80"
+                  className="group relative block h-72 w-full cursor-zoom-in overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 shadow-sm outline-none transition-shadow hover:shadow-lg focus-visible:ring-4 focus-visible:ring-ring/50 lg:h-80"
                 >
                   <Image
                     src={p.src}

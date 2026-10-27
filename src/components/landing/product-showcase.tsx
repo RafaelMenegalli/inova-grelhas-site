@@ -21,7 +21,7 @@ export async function ProductShowcase({ lang }: { lang: Lang }) {
 
   if (products.length === 0) {
     return (
-      <p className="rounded-xl border border-dashed border-slate-300 bg-white p-12 text-center text-slate-500">
+      <p className="rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-12 text-center text-slate-500 dark:text-slate-400">
         {t.catalog.empty}
       </p>
     );
@@ -33,8 +33,8 @@ export async function ProductShowcase({ lang }: { lang: Lang }) {
         const message = t.whatsapp.product.replace("{name}", product.name);
         return (
           <li key={product.id}>
-            <Card className="h-full gap-0 overflow-hidden border-slate-200 py-0 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
-              <div className="relative aspect-[4/3] bg-gradient-to-br from-slate-100 to-slate-200">
+            <Card className="h-full gap-0 overflow-hidden dark:bg-slate-950 border-slate-200 dark:border-slate-800 py-0 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
+              <div className="relative aspect-[4/3] bg-gradient-to-br from-slate-100 dark:from-slate-800 to-slate-200 dark:to-slate-900">
                 <Image
                   src={product.imageUrl}
                   alt={`${t.catalog.imageAlt} ${product.name}`}
@@ -44,7 +44,7 @@ export async function ProductShowcase({ lang }: { lang: Lang }) {
                 />
               </div>
               <CardHeader className="gap-2 px-6 pt-6">
-                <CardTitle className="text-xl font-bold tracking-tight text-slate-900">
+                <CardTitle className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
                   {product.name}
                 </CardTitle>
                 <CardDescription className="line-clamp-3 leading-relaxed">

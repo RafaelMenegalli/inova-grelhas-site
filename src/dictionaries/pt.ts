@@ -39,6 +39,10 @@ export const pt = {
     mobileLabel: "Mobile",
     language: "Idioma",
     switchTo: "Mudar para English",
+    theme: "Alternar tema",
+    themeLight: "Claro",
+    themeDark: "Escuro",
+    themeSystem: "Sistema",
   },
   hero: {
     badge: "Fábrica em Santa Bárbara d'Oeste, SP",

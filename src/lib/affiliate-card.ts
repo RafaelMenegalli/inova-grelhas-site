@@ -18,12 +18,14 @@ export const AFFILIATE_LIMITS = { title: 160, price: 40, url: 2000 } as const;
 export type Spec = string | [string, Record<string, string>, ...Spec[]];
 
 const CLASSES = {
-  card: "not-prose my-8 flex flex-col items-center gap-6 rounded-xl border border-slate-200 bg-slate-50 p-4 shadow-sm transition-shadow hover:shadow-md md:flex-row",
-  image: "h-32 w-32 shrink-0 rounded-md border bg-white object-contain p-2",
+  card: "not-prose my-8 flex flex-col items-center gap-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-4 shadow-sm transition-shadow hover:shadow-md md:flex-row",
+  image:
+    "h-32 w-32 shrink-0 rounded-md border bg-white dark:bg-slate-900 object-contain p-2",
   body: "flex-1 text-center md:text-left",
-  label: "m-0 text-xs font-semibold uppercase tracking-widest text-slate-500",
-  title: "m-0 mt-1 text-lg font-bold text-slate-900",
-  price: "m-0 mt-2 text-2xl font-extrabold text-primary",
+  label:
+    "m-0 text-xs font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400",
+  title: "m-0 mt-1 text-lg font-bold text-slate-900 dark:text-slate-50",
+  price: "m-0 mt-2 text-2xl font-extrabold text-primary dark:text-sky-400",
   button:
     "w-full rounded-lg bg-primary px-6 py-3 text-center font-bold text-primary-foreground no-underline transition-colors hover:bg-primary/90 md:w-auto",
 } as const;

@@ -36,19 +36,19 @@ export function SiteFooter({
           <p className="font-semibold text-white">{t.company}</p>
           <dl className="mt-4 space-y-3 leading-relaxed">
             <div>
-              <dt className="text-xs uppercase tracking-wider text-slate-500">
+              <dt className="text-xs uppercase tracking-wider text-slate-400">
                 {site.legalName === site.name ? t.legalAndTrade : t.legal}
               </dt>
               <dd className="text-slate-300">{site.legalName}</dd>
             </div>
             <div>
-              <dt className="text-xs uppercase tracking-wider text-slate-500">
+              <dt className="text-xs uppercase tracking-wider text-slate-400">
                 {t.taxId}
               </dt>
               <dd className="text-slate-300">{site.cnpj}</dd>
             </div>
             <div>
-              <dt className="text-xs uppercase tracking-wider text-slate-500">
+              <dt className="text-xs uppercase tracking-wider text-slate-400">
                 {t.address}
               </dt>
               <dd className="text-slate-300">
@@ -121,7 +121,7 @@ export function SiteFooter({
             {t.secureRest}
           </span>
         </p>
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-slate-400">
           © {site.name}. {t.rights}
         </p>
       </div>

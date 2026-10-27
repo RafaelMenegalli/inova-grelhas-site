@@ -40,6 +40,10 @@ export const en: Dictionary = {
     mobileLabel: "Mobile",
     language: "Language",
     switchTo: "Switch to Português",
+    theme: "Toggle theme",
+    themeLight: "Light",
+    themeDark: "Dark",
+    themeSystem: "System",
   },
   hero: {
     badge: "Factory in Santa Bárbara d'Oeste, SP, Brazil",

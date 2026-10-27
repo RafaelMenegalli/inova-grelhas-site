@@ -158,16 +158,19 @@ export function LandingPage({ lang }: { lang: Lang }) {
 
         {/* Sobre */}
         <ScrollReveal>
-          <section id="sobre" className="bg-white px-5 py-20 sm:py-28">
+          <section
+            id="sobre"
+            className="bg-white dark:bg-slate-950 px-5 py-20 sm:py-28"
+          >
             <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-16">
               <div className="lg:col-span-5">
-                <p className="text-sm font-semibold uppercase tracking-widest text-primary">
+                <p className="text-sm font-semibold uppercase tracking-widest text-primary dark:text-sky-400">
                   {about.eyebrow}
                 </p>
-                <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+                <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50 sm:text-4xl">
                   {about.title}
                 </h2>
-                <p className="mt-5 text-lg leading-relaxed text-slate-600">
+                <p className="mt-5 text-lg leading-relaxed text-slate-600 dark:text-slate-400">
                   {about.text}
                 </p>
               </div>
@@ -180,18 +183,18 @@ export function LandingPage({ lang }: { lang: Lang }) {
                       className={i === 0 ? "sm:col-span-2" : undefined}
                     >
                       <div
-                        className={`flex h-full flex-col gap-5 rounded-3xl border border-slate-200/60 bg-white p-8 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-primary/10 ${
+                        className={`flex h-full flex-col gap-5 rounded-3xl border border-slate-200/60 dark:border-slate-800/60 bg-white dark:bg-slate-900 p-8 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-primary/10 ${
                           i === 0 ? "sm:flex-row sm:items-start sm:gap-6" : ""
                         }`}
                       >
-                        <span className="flex w-fit shrink-0 items-center justify-center rounded-2xl bg-primary/10 p-4 text-primary">
+                        <span className="flex w-fit shrink-0 items-center justify-center rounded-2xl bg-primary/10 p-4 text-primary dark:text-sky-400">
                           <Icon className="size-8" aria-hidden />
                         </span>
                         <div>
-                          <h3 className="mb-3 text-xl font-bold text-slate-900">
+                          <h3 className="mb-3 text-xl font-bold text-slate-900 dark:text-slate-50">
                             {t}
                           </h3>
-                          <p className="text-sm leading-relaxed text-slate-600">
+                          <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
                             {text}
                           </p>
                         </div>
@@ -206,15 +209,18 @@ export function LandingPage({ lang }: { lang: Lang }) {
 
         {/* Produtos */}
         <ScrollReveal>
-          <section id="produtos" className="bg-slate-50 px-5 py-20 sm:py-28">
+          <section
+            id="produtos"
+            className="bg-slate-50 dark:bg-slate-900 px-5 py-20 sm:py-28"
+          >
             <div className="mx-auto max-w-6xl">
-              <p className="text-sm font-semibold uppercase tracking-widest text-primary">
+              <p className="text-sm font-semibold uppercase tracking-widest text-primary dark:text-sky-400">
                 {catalog.eyebrow}
               </p>
-              <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+              <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50 sm:text-4xl">
                 {catalog.title}
               </h2>
-              <p className="mb-12 mt-4 max-w-2xl text-lg text-slate-600">
+              <p className="mb-12 mt-4 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
                 {catalog.text}
               </p>
               <Suspense fallback={<ProductShowcaseSkeleton />}>
@@ -266,23 +272,26 @@ export function LandingPage({ lang }: { lang: Lang }) {
 
         {/* Localização */}
         <ScrollReveal>
-          <section id="localizacao" className="bg-white px-5 py-16 md:py-24">
+          <section
+            id="localizacao"
+            className="bg-white dark:bg-slate-900 px-5 py-16 md:py-24"
+          >
             <div className="mx-auto max-w-6xl text-center">
-              <p className="text-sm font-semibold uppercase tracking-widest text-primary">
+              <p className="text-sm font-semibold uppercase tracking-widest text-primary dark:text-sky-400">
                 {location.eyebrow}
               </p>
-              <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+              <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50 sm:text-4xl">
                 {location.title}
               </h2>
-              <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-slate-600">
+              <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-slate-600 dark:text-slate-400">
                 {location.description}
               </p>
             </div>
-            <div className="relative mx-auto mt-8 aspect-square w-full max-w-6xl overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-2xl md:mt-12 md:aspect-[21/9]">
+            <div className="relative mx-auto mt-8 aspect-square w-full max-w-6xl overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-800 shadow-2xl md:mt-12 md:aspect-[21/9]">
               <iframe
                 src="https://maps.google.com/maps?q=Rua%20Dr.%20H%C3%A9lio%20Furlan%2C%2059%20-%20Santa%20B%C3%A1rbara%20d'Oeste%20-%20SP%2C%2013458-733&t=&z=15&ie=UTF8&iwloc=&output=embed"
                 title={location.mapTitle}
-                className="absolute inset-0 h-full w-full border-0"
+                className="absolute inset-0 h-full w-full border-0 dark:[filter:invert(90%)_hue-rotate(180deg)]"
                 allowFullScreen={false}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"

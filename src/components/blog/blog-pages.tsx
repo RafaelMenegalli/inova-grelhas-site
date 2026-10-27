@@ -85,7 +85,7 @@ function ArticleImage({
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="flex items-center gap-4 text-2xl font-extrabold uppercase tracking-tight text-slate-900 sm:text-3xl">
+    <h2 className="flex items-center gap-4 text-2xl font-extrabold uppercase tracking-tight text-slate-900 dark:text-slate-50 sm:text-3xl">
       <span
         aria-hidden
         className="h-8 w-1.5 shrink-0 rounded-full bg-primary sm:h-9"
@@ -109,25 +109,25 @@ function LatestList({
         <li key={a.slug}>
           <Link
             href={blogPath(locale, a.slug)}
-            className="group flex flex-col gap-5 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-lg sm:flex-row sm:gap-8 sm:p-5"
+            className="group flex flex-col gap-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-sm transition-shadow hover:shadow-lg sm:flex-row sm:gap-8 sm:p-5"
           >
-            <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-slate-200 sm:w-[30%] sm:shrink-0">
+            <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-slate-200 dark:bg-slate-800 sm:w-[30%] sm:shrink-0">
               <ArticleImage
                 article={a}
                 sizes="(min-width: 640px) 30vw, 100vw"
               />
             </div>
             <div className="flex min-w-0 flex-1 flex-col justify-center gap-3">
-              <Badge className="w-fit bg-primary/10 text-primary hover:bg-primary/10">
+              <Badge className="w-fit bg-primary/10 text-primary dark:text-sky-400 hover:bg-primary/10">
                 {categoryLabel(a.category, locale)}
               </Badge>
-              <h3 className="text-balance text-xl font-bold leading-snug tracking-tight text-slate-900 transition-colors group-hover:text-primary sm:text-2xl">
+              <h3 className="text-balance text-xl font-bold leading-snug tracking-tight text-slate-900 dark:text-slate-50 transition-colors group-hover:text-primary dark:group-hover:text-sky-400 sm:text-2xl">
                 {a.title}
               </h3>
-              <p className="hidden line-clamp-2 leading-relaxed text-slate-600 sm:block">
+              <p className="hidden line-clamp-2 leading-relaxed text-slate-600 dark:text-slate-400 sm:block">
                 {a.excerpt}
               </p>
-              <p className="text-xs font-medium uppercase tracking-widest text-slate-500">
+              <p className="text-xs font-medium uppercase tracking-widest text-slate-500 dark:text-slate-400">
                 {formatDate(a.createdAt, locale)}
               </p>
             </div>
@@ -165,7 +165,10 @@ function CategoryShelf({
         <h3 className="border-b-4 border-primary bg-slate-900 px-4 py-2 text-sm font-bold uppercase tracking-widest text-white sm:text-base">
           {categoryLabel(category, locale)}
         </h3>
-        <span aria-hidden className="h-px flex-1 bg-slate-200" />
+        <span
+          aria-hidden
+          className="h-px flex-1 bg-slate-200 dark:bg-slate-800"
+        />
       </div>
       <ul className="mt-8 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
         {articles.map((a) => (
@@ -174,16 +177,16 @@ function CategoryShelf({
               href={blogPath(locale, a.slug)}
               className="group flex h-full flex-col gap-3"
             >
-              <div className="relative aspect-[16/10] overflow-hidden rounded-lg bg-slate-200">
+              <div className="relative aspect-[16/10] overflow-hidden rounded-lg bg-slate-200 dark:bg-slate-800">
                 <ArticleImage
                   article={a}
                   sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
                 />
               </div>
-              <p className="text-[11px] font-medium uppercase tracking-widest text-slate-500">
+              <p className="text-[11px] font-medium uppercase tracking-widest text-slate-500 dark:text-slate-400">
                 {formatDate(a.createdAt, locale)}
               </p>
-              <h4 className="line-clamp-3 text-balance text-base font-bold leading-snug text-slate-900 transition-colors group-hover:text-primary">
+              <h4 className="line-clamp-3 text-balance text-base font-bold leading-snug text-slate-900 dark:text-slate-50 transition-colors group-hover:text-primary dark:group-hover:text-sky-400">
                 {a.title}
               </h4>
             </Link>
@@ -309,9 +312,9 @@ export async function BlogIndexPage({ locale }: { locale: Locale }) {
 
       <main id="artigos">
         {articles.length === 0 ? (
-          <section className="bg-slate-50 px-5 py-16 sm:py-24">
+          <section className="bg-slate-50 dark:bg-slate-900 px-5 py-16 sm:py-24">
             <div className="mx-auto max-w-6xl">
-              <p className="rounded-xl border border-dashed border-slate-300 bg-white p-12 text-center text-slate-500">
+              <p className="rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-12 text-center text-slate-500 dark:text-slate-400">
                 {t.empty}
               </p>
             </div>
@@ -319,14 +322,14 @@ export async function BlogIndexPage({ locale }: { locale: Locale }) {
         ) : (
           <>
             {latest.length > 0 && (
-              <section className="bg-slate-50 px-5 py-16 sm:py-24">
+              <section className="bg-slate-50 dark:bg-slate-900 px-5 py-16 sm:py-24">
                 <div className="mx-auto max-w-6xl">
                   <SectionHeading>{t.latestTitle}</SectionHeading>
                   <LatestList locale={locale} articles={latest} />
                 </div>
               </section>
             )}
-            <section className="bg-white px-5 py-16 sm:py-24">
+            <section className="bg-white dark:bg-slate-900 px-5 py-16 sm:py-24">
               <div className="mx-auto max-w-6xl">
                 <SectionHeading>{t.categoriesTitle}</SectionHeading>
                 <div className="mt-12 flex flex-col gap-16">
@@ -451,10 +454,10 @@ async function ArticleContent({
           }}
         />
         <header className="mx-auto max-w-3xl px-5 pt-12 sm:pt-16">
-          <div className="flex items-center justify-between gap-4 text-sm font-medium text-slate-500">
+          <div className="flex items-center justify-between gap-4 text-sm font-medium text-slate-500 dark:text-slate-400">
             <Link
               href={blogPath(locale)}
-              className="inline-flex items-center gap-2 transition-colors hover:text-primary"
+              className="inline-flex items-center gap-2 transition-colors hover:text-primary dark:hover:text-sky-400"
             >
               <ArrowLeft className="size-4" aria-hidden />
               {t.back}
@@ -462,26 +465,26 @@ async function ArticleContent({
             <Link
               href={blogPath(locale === "pt" ? "en" : "pt", slug)}
               hrefLang={locale === "pt" ? "en" : "pt-BR"}
-              className="inline-flex items-center gap-2 transition-colors hover:text-primary"
+              className="inline-flex items-center gap-2 transition-colors hover:text-primary dark:hover:text-sky-400"
             >
               <Languages className="size-4" aria-hidden />
               {t.other}
             </Link>
           </div>
-          <p className="mt-12 text-center text-xs font-semibold uppercase tracking-widest text-primary sm:mt-16">
+          <p className="mt-12 text-center text-xs font-semibold uppercase tracking-widest text-primary dark:text-sky-400 sm:mt-16">
             {formatDate(article.createdAt, locale)}
             <span aria-hidden className="mx-2 text-slate-300">
               ·
             </span>
             {t.readTime(minutes)}
           </p>
-          <h1 className="mx-auto mt-5 max-w-3xl text-balance text-center text-4xl font-bold leading-[1.1] tracking-tight text-slate-900 sm:text-5xl">
+          <h1 className="mx-auto mt-5 max-w-3xl text-balance text-center text-4xl font-bold leading-[1.1] tracking-tight text-slate-900 dark:text-slate-50 sm:text-5xl">
             {article.title}
           </h1>
         </header>
 
         <div className="mx-auto mt-12 max-w-5xl px-5 sm:mt-14">
-          <div className="relative aspect-[16/9] overflow-hidden rounded-xl bg-slate-200 shadow-xl">
+          <div className="relative aspect-[16/9] overflow-hidden rounded-xl bg-slate-200 dark:bg-slate-800 shadow-xl">
             <Image
               src={article.coverImage}
               alt={article.title}
@@ -494,7 +497,7 @@ async function ArticleContent({
         </div>
 
         <div className="mx-auto mt-14 max-w-[70ch] px-5 sm:mt-16">
-          <hr className="border-slate-200" />
+          <hr className="border-slate-200 dark:border-slate-800" />
         </div>
 
         {/* HTML já sanitizado no servidor (lib/sanitize.ts) antes de chegar aqui. */}
@@ -555,7 +558,7 @@ async function ArticleContent({
         >
           <h2
             id="most-read"
-            className="text-xl font-bold tracking-tight text-slate-900"
+            className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-50"
           >
             {t.mostRead}
           </h2>
@@ -564,9 +567,9 @@ async function ArticleContent({
               <li key={a.slug}>
                 <Link
                   href={blogPath(locale, a.slug)}
-                  className="group flex gap-4 rounded-xl border border-slate-200 bg-white p-3 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
+                  className="group flex gap-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
                 >
-                  <span className="relative size-20 shrink-0 overflow-hidden rounded-md bg-slate-200">
+                  <span className="relative size-20 shrink-0 overflow-hidden rounded-md bg-slate-200 dark:bg-slate-800">
                     <Image
                       src={a.coverImage}
                       alt=""
@@ -577,11 +580,11 @@ async function ArticleContent({
                   </span>
                   <span className="flex min-w-0 flex-1 flex-col justify-center">
                     {a.category && (
-                      <span className="text-xs font-semibold uppercase tracking-wider text-primary">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-primary dark:text-sky-400">
                         {categoryLabel(a.category, locale)}
                       </span>
                     )}
-                    <span className="line-clamp-2 font-semibold leading-snug text-slate-900 group-hover:text-primary">
+                    <span className="line-clamp-2 font-semibold leading-snug text-slate-900 dark:text-slate-50 group-hover:text-primary dark:group-hover:text-sky-400">
                       {a.title}
                     </span>
                   </span>

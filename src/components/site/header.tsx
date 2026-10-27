@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Globe, Menu, MessageCircle } from "lucide-react";
 import { BrandLogo } from "@/components/site/brand-logo";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -20,6 +21,9 @@ import {
   type Dictionary,
   type Lang,
 } from "@/dictionaries";
+
+const toggleClass =
+  "relative size-9 text-slate-300 hover:bg-white/10 hover:text-white";
 
 const LANGUAGES: { lang: Lang; label: string; hrefLang: string }[] = [
   { lang: "pt", label: "Português", hrefLang: "pt-BR" },
@@ -38,6 +42,13 @@ export function SiteHeader({ lang, nav, quoteHref, switchHrefs }: Props) {
   const [open, setOpen] = useState(false);
   const other = LANGUAGES.find((l) => l.lang !== lang) ?? LANGUAGES[0];
   const switchTo = switchHrefs ?? { pt: homePath("pt"), en: homePath("en") };
+
+  const themeLabels = {
+    toggle: nav.theme,
+    light: nav.themeLight,
+    dark: nav.themeDark,
+    system: nav.themeSystem,
+  };
 
   const links = [
     { href: sectionPath(lang, "sobre"), label: nav.about },
@@ -84,6 +95,8 @@ export function SiteHeader({ lang, nav, quoteHref, switchHrefs }: Props) {
               {other.lang.toUpperCase()}
             </Link>
           </Button>
+
+          <ModeToggle labels={themeLabels} className={toggleClass} />
 
           <Button asChild size="lg" className="h-9 px-4">
             <a href={quoteHref} target="_blank" rel="noopener noreferrer">
@@ -154,6 +167,11 @@ export function SiteHeader({ lang, nav, quoteHref, switchHrefs }: Props) {
                     {l.lang.toUpperCase()}
                   </Link>
                 ))}
+              </div>
+
+              <div className="mt-2 flex items-center gap-2 px-3 text-slate-400">
+                <span className="text-sm">{nav.theme}</span>
+                <ModeToggle labels={themeLabels} className={toggleClass} />
               </div>
 
               <Button asChild size="lg" className="mt-4 h-11">
