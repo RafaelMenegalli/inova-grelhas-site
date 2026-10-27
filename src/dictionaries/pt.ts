@@ -41,6 +41,7 @@ export const pt = {
     mainLabel: "Principal",
     mobileLabel: "Mobile",
     language: "Idioma",
+    whatsappFloat: "Fale conosco no WhatsApp",
     switchTo: "Mudar para English",
     theme: "Alternar tema",
     themeLight: "Claro",

@@ -41,6 +41,7 @@ export const en: Dictionary = {
     mainLabel: "Main",
     mobileLabel: "Mobile",
     language: "Language",
+    whatsappFloat: "Chat with us on WhatsApp",
     switchTo: "Switch to Português",
     theme: "Toggle theme",
     themeLight: "Light",

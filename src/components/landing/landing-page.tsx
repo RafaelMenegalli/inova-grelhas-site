@@ -20,6 +20,7 @@ import { QualityBar } from "@/components/landing/quality-bar";
 import { TestimonialsSection } from "@/components/landing/testimonials-section";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { Gtm } from "@/components/site/gtm";
+import { WhatsAppFloat } from "@/components/site/whatsapp-float";
 import { SiteHeader } from "@/components/site/header";
 import { Button } from "@/components/ui/button";
 import { getDictionary, homePath, type Lang } from "@/dictionaries";
@@ -302,6 +303,10 @@ export function LandingPage({ lang }: { lang: Lang }) {
       </main>
 
       <SiteFooter lang={lang} quoteHref={generalQuote} />
+      <WhatsAppFloat
+        message={dict.whatsapp.general}
+        label={dict.nav.whatsappFloat}
+      />
     </div>
   );
 }

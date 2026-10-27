@@ -3,6 +3,7 @@ import { Languages } from "lucide-react";
 import { copy } from "@/components/blog/copy";
 import { SiteFooter } from "@/components/site/footer";
 import { Gtm } from "@/components/site/gtm";
+import { WhatsAppFloat } from "@/components/site/whatsapp-float";
 import { SiteHeader } from "@/components/site/header";
 import { blogPath, type Locale } from "@/lib/articles";
 import { blogHomePath, getDictionary } from "@/dictionaries";
@@ -48,6 +49,10 @@ export function BlogShell({
       )}
       <div className="flex-1">{children}</div>
       <SiteFooter lang={locale} quoteHref={quote} />
+      <WhatsAppFloat
+        message={dict.whatsapp.blog}
+        label={dict.nav.whatsappFloat}
+      />
     </div>
   );
 }
