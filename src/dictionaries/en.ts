@@ -196,6 +196,7 @@ export const en: Dictionary = {
     legal: "Legal Name",
     taxId: "CNPJ (Brazilian Tax ID)",
     address: "Address",
+    openMap: "View on Google Maps",
     postalCode: "Postal code (CEP)",
     contact: "Contact",
     whatsapp: "WhatsApp",

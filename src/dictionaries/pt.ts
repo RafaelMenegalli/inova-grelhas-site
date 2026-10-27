@@ -196,6 +196,7 @@ export const pt = {
     legal: "Razão Social",
     taxId: "CNPJ",
     address: "Endereço",
+    openMap: "Ver no Google Maps",
     postalCode: "CEP",
     contact: "Contato",
     whatsapp: "WhatsApp",

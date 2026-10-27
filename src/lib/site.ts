@@ -23,6 +23,12 @@ export const site = {
   region: "SP",
 };
 
+/** Link do Google Maps (busca pelo endereço) para abrir o app ou o site direto no local. */
+export function mapsLink() {
+  const address = `${site.street}, ${site.city} - ${site.region}, ${site.postalCode}`;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+}
+
 export function whatsappLink(message: string) {
   return buildWhatsAppUrl(message, site.whatsapp);
 }

@@ -7,7 +7,7 @@ import {
   sectionPath,
   type Lang,
 } from "@/dictionaries";
-import { site } from "@/lib/site";
+import { mapsLink, site } from "@/lib/site";
 
 const linkClass = "transition-colors hover:text-white";
 
@@ -52,11 +52,19 @@ export function SiteFooter({
                 {t.address}
               </dt>
               <dd className="text-slate-300">
-                {site.street}
-                <br />
-                {t.postalCode} {site.postalCode}
-                <br />
-                {site.city} - {site.region}
+                <a
+                  href={mapsLink()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${t.openMap}: ${site.street}, ${site.city}`}
+                  className="underline-offset-4 transition-colors hover:text-white hover:underline"
+                >
+                  {site.street}
+                  <br />
+                  {t.postalCode} {site.postalCode}
+                  <br />
+                  {site.city} - {site.region}
+                </a>
               </dd>
             </div>
           </dl>
