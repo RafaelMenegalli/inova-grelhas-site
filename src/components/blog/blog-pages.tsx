@@ -13,7 +13,11 @@ import {
 } from "lucide-react";
 import { BlogShell } from "@/components/blog/blog-shell";
 import { copy } from "@/components/blog/copy";
+import { MobileStickyCTA } from "@/components/blog/mobile-sticky-cta";
+import { TableOfContents } from "@/components/blog/table-of-contents";
 import { ViewCounter } from "@/components/blog/view-counter";
+import { sectionPath } from "@/dictionaries";
+import { addHeadingIds } from "@/lib/toc";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { categoryLabel, categoryOrder } from "@/lib/categories";
@@ -427,6 +431,8 @@ async function ArticleContent({
     1,
     Math.round(htmlToText(article.content).split(" ").length / 200),
   );
+  // Dá id aos H2/H3 e monta o índice (o HTML já foi sanitizado antes).
+  const { html: contentHtml, headings } = addHeadingIds(article.content);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -442,8 +448,13 @@ async function ArticleContent({
   };
 
   return (
-    <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 pb-12 lg:grid-cols-12 lg:gap-12 lg:px-8">
+    <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 pb-24 md:pb-12 lg:grid-cols-12 lg:gap-12 lg:px-8">
       <ViewCounter slug={article.slug} />
+      <MobileStickyCTA
+        text={t.stickyText}
+        label={t.stickyButton}
+        href={sectionPath(locale, "produtos")}
+      />
       <article
         className={popular.length > 0 ? "lg:col-span-8" : "lg:col-span-12"}
       >
@@ -500,10 +511,16 @@ async function ArticleContent({
           <hr className="border-slate-200 dark:border-slate-800" />
         </div>
 
+        {headings.length > 0 && (
+          <div className="mx-auto mt-10 max-w-[70ch] px-5">
+            <TableOfContents headings={headings} title={t.toc} />
+          </div>
+        )}
+
         {/* HTML já sanitizado no servidor (lib/sanitize.ts) antes de chegar aqui. */}
         <div
           className="prose prose-lg prose-slate dark:prose-invert mx-auto mt-12 max-w-[70ch] px-5 prose-headings:font-bold prose-headings:tracking-tight prose-p:leading-8 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-blockquote:border-primary prose-img:rounded-xl prose-img:shadow-lg"
-          dangerouslySetInnerHTML={{ __html: article.content }}
+          dangerouslySetInnerHTML={{ __html: contentHtml }}
         />
 
         <nav
@@ -606,7 +623,7 @@ export function ArticlePage({
   params: Promise<{ slug: string }>;
 }) {
   return (
-    <BlogShell locale={locale} localeBar={false}>
+    <BlogShell locale={locale} localeBar={false} mobileCta>
       <Suspense
         fallback={
           <div className="mx-auto max-w-3xl space-y-6 px-5 py-16">

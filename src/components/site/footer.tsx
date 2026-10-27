@@ -8,22 +8,30 @@ import {
   type Lang,
 } from "@/dictionaries";
 import { mapsLink, site } from "@/lib/site";
+import { cn } from "@/lib/utils";
 
 const linkClass = "transition-colors hover:text-white";
 
 export function SiteFooter({
   lang,
   quoteHref,
+  className,
 }: {
   lang: Lang;
   quoteHref: string;
+  className?: string;
 }) {
   const dict = getDictionary(lang);
   const t = dict.footer;
   const nav = dict.nav;
 
   return (
-    <footer className="bg-slate-950 px-5 pb-10 pt-20 text-sm text-slate-400">
+    <footer
+      className={cn(
+        "bg-slate-950 px-5 pb-10 pt-20 text-sm text-slate-400",
+        className,
+      )}
+    >
       <div className="mx-auto grid max-w-6xl gap-12 sm:grid-cols-2 lg:grid-cols-[1.5fr_1.2fr_1fr_1fr]">
         <div>
           <BrandLogo src="/logo-horizontal-sem-fundo.png" className="h-16" />

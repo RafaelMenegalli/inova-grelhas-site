@@ -13,11 +13,14 @@ import { whatsappLink } from "@/lib/site";
 export function BlogShell({
   locale,
   localeBar = true,
+  mobileCta = false,
   children,
 }: {
   locale: Locale;
   /** Exibe a faixa de troca de idioma (artigos têm o próprio link para o mesmo slug). */
   localeBar?: boolean;
+  /** A página tem a barra fixa de CTA no celular: o rodapé e o botão do WhatsApp sobem para não ficar atrás dela. */
+  mobileCta?: boolean;
   children: React.ReactNode;
 }) {
   const dict = getDictionary(locale);
@@ -48,10 +51,15 @@ export function BlogShell({
         </div>
       )}
       <div className="flex-1">{children}</div>
-      <SiteFooter lang={locale} quoteHref={quote} />
+      <SiteFooter
+        lang={locale}
+        quoteHref={quote}
+        className={mobileCta ? "pb-28 md:pb-10" : undefined}
+      />
       <WhatsAppFloat
         message={dict.whatsapp.blog}
         label={dict.nav.whatsappFloat}
+        raisedOnMobile={mobileCta}
       />
     </div>
   );

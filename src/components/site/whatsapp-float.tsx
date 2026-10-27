@@ -1,4 +1,5 @@
 import { whatsappLink } from "@/lib/site";
+import { cn } from "@/lib/utils";
 
 // Logo do WhatsApp (Simple Icons); o lucide-react não tem ícones de marcas.
 const WHATSAPP_PATH =
@@ -11,9 +12,12 @@ const WHATSAPP_PATH =
 export function WhatsAppFloat({
   message,
   label,
+  raisedOnMobile = false,
 }: {
   message: string;
   label: string;
+  /** Sobe o botão no celular para não ficar atrás da barra fixa de CTA da página. */
+  raisedOnMobile?: boolean;
 }) {
   return (
     <a
@@ -22,7 +26,10 @@ export function WhatsAppFloat({
       rel="noopener noreferrer"
       aria-label={label}
       title={label}
-      className="group fixed bottom-4 right-4 z-40 flex size-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-black/25 outline-none transition-transform hover:scale-110 focus-visible:ring-4 focus-visible:ring-[#25D366]/50 active:scale-95 sm:bottom-6 sm:right-6"
+      className={cn(
+        "group fixed right-4 z-40 flex size-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-black/25 outline-none transition-transform hover:scale-110 focus-visible:ring-4 focus-visible:ring-[#25D366]/50 active:scale-95 sm:right-6",
+        raisedOnMobile ? "bottom-24 md:bottom-6" : "bottom-4 sm:bottom-6",
+      )}
     >
       {/* Pulso discreto para chamar atenção; some para quem prefere menos movimento. */}
       <span
