@@ -1,4 +1,4 @@
-import { ProductCarousel } from "@/components/landing/product-carousel";
+import { ProductCatalog } from "@/components/landing/product-catalog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getDictionary, type Lang } from "@/dictionaries";
 import { getActiveProducts } from "@/lib/products";
@@ -16,25 +16,16 @@ export async function ProductShowcase({ lang }: { lang: Lang }) {
     );
   }
 
-  const countLabel = (
-    products.length === 1 ? t.catalog.countOne : t.catalog.countMany
-  ).replace("{n}", String(products.length));
-
   return (
-    <>
-      <p className="mb-2 text-sm font-medium text-slate-500 dark:text-slate-400">
-        {countLabel}
-      </p>
-      <ProductCarousel
-        labels={t.catalog}
-        items={products.map((product) => ({
-          product,
-          quoteHref: whatsappLink(
-            t.whatsapp.product.replace("{name}", product.name),
-          ),
-        }))}
-      />
-    </>
+    <ProductCatalog
+      labels={t.catalog}
+      items={products.map((product) => ({
+        product,
+        quoteHref: whatsappLink(
+          t.whatsapp.product.replace("{name}", product.name),
+        ),
+      }))}
+    />
   );
 }
 
