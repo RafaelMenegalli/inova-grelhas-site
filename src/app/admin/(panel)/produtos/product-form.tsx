@@ -29,6 +29,42 @@ const IMAGE_TYPES = [
   "image/gif",
 ];
 
+// A Vercel recusa corpos de requisição acima de ~4,5 MB, então as fotos novas são
+// reduzidas no navegador e o envio total é limitado.
+const MAX_DIMENSION = 1600;
+const SKIP_COMPRESSION_BELOW = 400 * 1024;
+const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
+
+/** Redimensiona (lado maior até 1600 px) e converte para WebP; devolve o original se não compensar. */
+async function compressImage(file: File): Promise<File> {
+  if (file.type === "image/gif" || file.size < SKIP_COMPRESSION_BELOW) {
+    return file;
+  }
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(
+      1,
+      MAX_DIMENSION / Math.max(bitmap.width, bitmap.height),
+    );
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return file;
+    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, "image/webp", 0.85),
+    );
+    if (!blob || blob.size >= file.size) return file;
+    return new File([blob], file.name.replace(/.[^.]+$/, "") + ".webp", {
+      type: "image/webp",
+    });
+  } catch {
+    return file;
+  }
+}
+
 /** Foto do formulário: já salva (`url`) ou escolhida agora (`file`). A ordem do array é a ordem final. */
 type Photo = { id: string; preview: string; url?: string; file?: File };
 
@@ -115,7 +151,7 @@ export function ProductForm({
     );
   }
 
-  function pickPhotos(e: React.ChangeEvent<HTMLInputElement>) {
+  async function pickPhotos(e: React.ChangeEvent<HTMLInputElement>) {
     const picked = Array.from(e.target.files ?? []);
     e.target.value = "";
     if (picked.length === 0) return;
@@ -125,7 +161,7 @@ export function ProductForm({
       picked.length > room
         ? `Cada produto aceita no máximo ${MAX_PRODUCT_IMAGES} fotos.`
         : null;
-    const accepted: Photo[] = [];
+    const valid: File[] = [];
     for (const file of picked.slice(0, room)) {
       if (!IMAGE_TYPES.includes(file.type)) {
         error = `"${file.name}": formato inválido (use JPG, PNG, WebP, AVIF ou GIF).`;
@@ -135,6 +171,10 @@ export function ProductForm({
         error = `"${file.name}": o arquivo excede 5 MB.`;
         continue;
       }
+      valid.push(file);
+    }
+    const accepted: Photo[] = [];
+    for (const file of await Promise.all(valid.map(compressImage))) {
       const preview = URL.createObjectURL(file);
       blobUrls.current.push(preview);
       accepted.push({ id: preview, preview, file });
@@ -159,6 +199,13 @@ export function ProductForm({
   // como juntá-los às fotos já salvas. (O input de arquivo só escolhe: não tem `name`.)
   const newPhotos = photos.filter((p) => p.file);
   function submit(formData: FormData) {
+    const total = newPhotos.reduce((sum, p) => sum + p.file!.size, 0);
+    if (total > MAX_UPLOAD_BYTES) {
+      setPhotoError(
+        "As fotos novas somam mais de 4 MB. Remova algumas ou use imagens menores.",
+      );
+      return;
+    }
     formData.delete("images");
     for (const p of newPhotos) formData.append("images", p.file!);
     return action(formData);

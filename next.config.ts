@@ -22,8 +22,9 @@ const nextConfig: NextConfig = {
   },
   partialPrefetching: true,
   experimental: {
-    // Uploads de até 5 MB (limite validado em lib/storage.ts) + overhead do multipart.
-    serverActions: { bodySizeLimit: "6mb" },
+    // Até 5 fotos de 5 MB (validadas em lib/storage.ts) + overhead do multipart. O formulário
+    // reduz as fotos no navegador; na Vercel o limite real do corpo é ~4,5 MB.
+    serverActions: { bodySizeLimit: "30mb" },
   },
   turbopack: {
     rules: {
