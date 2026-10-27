@@ -17,7 +17,7 @@ export const site = {
   // NEXT_PUBLIC_CNPJ com os dados reais antes de divulgar o site.
   legalName: process.env.NEXT_PUBLIC_LEGAL_NAME || "Inova Grelhas Lineares",
   cnpj: process.env.NEXT_PUBLIC_CNPJ || "XX.XXX.XXX/0001-XX",
-  street: "Rua Dr. Hélio Furlan",
+  street: "Rua Dr. Hélio Furlan, 59",
   postalCode: "13458-733",
   city: "Santa Bárbara d'Oeste",
   region: "SP",

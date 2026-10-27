@@ -248,7 +248,7 @@ export function LandingPage({ lang }: { lang: Lang }) {
           </div>
           <div className="relative mx-auto mt-8 aspect-square w-full max-w-6xl overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-2xl md:mt-12 md:aspect-[21/9]">
             <iframe
-              src="https://maps.google.com/maps?q=Rua%20Dr.%20H%C3%A9lio%20Furlan%2C%20Santa%20B%C3%A1rbara%20d'Oeste%20-%20SP%2C%2013458-733&t=&z=15&ie=UTF8&iwloc=&output=embed"
+              src="https://maps.google.com/maps?q=Rua%20Dr.%20H%C3%A9lio%20Furlan%2C%2059%20-%20Santa%20B%C3%A1rbara%20d'Oeste%20-%20SP%2C%2013458-733&t=&z=15&ie=UTF8&iwloc=&output=embed"
               title={location.mapTitle}
               className="absolute inset-0 h-full w-full border-0"
               allowFullScreen={false}
