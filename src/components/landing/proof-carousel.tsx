@@ -21,7 +21,13 @@ import {
 import { proofImages } from "@/lib/social-proof";
 
 /** Carrossel de prints reais de avaliações. Cada print abre ampliado ao clicar. */
-export function ProofCarousel() {
+export function ProofCarousel({
+  zoomLabel,
+  dialogTitle,
+}: {
+  zoomLabel: string;
+  dialogTitle: string;
+}) {
   // Rotação automática em loop, a cada 3 s. Pausa ao passar o mouse e enquanto um
   // print está ampliado; quem pediu "reduzir movimento" no sistema não a recebe.
   const [autoplay] = useState(() => {
@@ -60,7 +66,7 @@ export function ProofCarousel() {
               <DialogTrigger asChild>
                 <button
                   type="button"
-                  aria-label={`Ampliar: ${p.alt}`}
+                  aria-label={`${zoomLabel}: ${p.alt}`}
                   className="group relative block h-72 w-full cursor-zoom-in overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-sm outline-none transition-shadow hover:shadow-lg focus-visible:ring-4 focus-visible:ring-ring/50 lg:h-80"
                 >
                   <Image
@@ -79,9 +85,7 @@ export function ProofCarousel() {
                 </button>
               </DialogTrigger>
               <DialogContent className="max-w-[min(94vw,52rem)] gap-0 p-2 sm:max-w-[min(94vw,52rem)] sm:p-3">
-                <DialogTitle className="sr-only">
-                  Avaliação de cliente
-                </DialogTitle>
+                <DialogTitle className="sr-only">{dialogTitle}</DialogTitle>
                 <DialogDescription className="sr-only">
                   {p.alt}
                 </DialogDescription>

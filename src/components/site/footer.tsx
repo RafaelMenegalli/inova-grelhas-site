@@ -1,47 +1,60 @@
 import Link from "next/link";
 import { ShieldCheck } from "lucide-react";
 import { BrandLogo } from "@/components/site/brand-logo";
+import {
+  blogHomePath,
+  getDictionary,
+  sectionPath,
+  type Lang,
+} from "@/dictionaries";
 import { site } from "@/lib/site";
 
 const linkClass = "transition-colors hover:text-white";
 
-export function SiteFooter({ quoteHref }: { quoteHref: string }) {
+export function SiteFooter({
+  lang,
+  quoteHref,
+}: {
+  lang: Lang;
+  quoteHref: string;
+}) {
+  const dict = getDictionary(lang);
+  const t = dict.footer;
+  const nav = dict.nav;
+
   return (
     <footer className="bg-slate-950 px-5 pb-10 pt-20 text-sm text-slate-400">
       <div className="mx-auto grid max-w-6xl gap-12 sm:grid-cols-2 lg:grid-cols-[1.5fr_1.2fr_1fr_1fr]">
         <div>
           <BrandLogo src="/logo-horizontal-sem-fundo.png" className="h-16" />
           <p className="mt-4 max-w-sm leading-relaxed">
-            Fábrica de ralos e grelhas lineares em inox em {site.city} -{" "}
-            {site.region}. Fundição própria, acabamento de alto padrão.
+            {t.about} {site.city} - {site.region}. {t.aboutEnd}
           </p>
         </div>
 
         <div>
-          <p className="font-semibold text-white">Dados da empresa</p>
+          <p className="font-semibold text-white">{t.company}</p>
           <dl className="mt-4 space-y-3 leading-relaxed">
             <div>
               <dt className="text-xs uppercase tracking-wider text-slate-500">
-                {site.legalName === site.name
-                  ? "Razão Social / Nome Fantasia"
-                  : "Razão Social"}
+                {site.legalName === site.name ? t.legalAndTrade : t.legal}
               </dt>
               <dd className="text-slate-300">{site.legalName}</dd>
             </div>
             <div>
               <dt className="text-xs uppercase tracking-wider text-slate-500">
-                CNPJ
+                {t.taxId}
               </dt>
               <dd className="text-slate-300">{site.cnpj}</dd>
             </div>
             <div>
               <dt className="text-xs uppercase tracking-wider text-slate-500">
-                Endereço
+                {t.address}
               </dt>
               <dd className="text-slate-300">
                 {site.street}
                 <br />
-                CEP {site.postalCode}
+                {t.postalCode} {site.postalCode}
                 <br />
                 {site.city} - {site.region}
               </dd>
@@ -50,7 +63,7 @@ export function SiteFooter({ quoteHref }: { quoteHref: string }) {
         </div>
 
         <div>
-          <p className="font-semibold text-white">Contato</p>
+          <p className="font-semibold text-white">{t.contact}</p>
           <ul className="mt-4 space-y-3">
             <li>
               <a
@@ -59,38 +72,41 @@ export function SiteFooter({ quoteHref }: { quoteHref: string }) {
                 rel="noopener noreferrer"
                 className={linkClass}
               >
-                WhatsApp
+                {t.whatsapp}
               </a>
             </li>
           </ul>
         </div>
 
         <div>
-          <p className="font-semibold text-white">Links</p>
+          <p className="font-semibold text-white">{t.links}</p>
           <ul className="mt-4 space-y-3">
             <li>
-              <Link href="/#sobre" className={linkClass}>
-                Sobre
+              <Link href={sectionPath(lang, "sobre")} className={linkClass}>
+                {nav.about}
               </Link>
             </li>
             <li>
-              <Link href="/#produtos" className={linkClass}>
-                Produtos
+              <Link href={sectionPath(lang, "produtos")} className={linkClass}>
+                {nav.products}
               </Link>
             </li>
             <li>
-              <Link href="/#projetistas" className={linkClass}>
-                Para projetistas
+              <Link
+                href={sectionPath(lang, "projetistas")}
+                className={linkClass}
+              >
+                {t.forDesigners}
               </Link>
             </li>
             <li>
-              <Link href="/#faq" className={linkClass}>
-                Perguntas frequentes
+              <Link href={sectionPath(lang, "faq")} className={linkClass}>
+                {t.faq}
               </Link>
             </li>
             <li>
-              <Link href="/blog" className={linkClass}>
-                Blog
+              <Link href={blogHomePath(lang)} className={linkClass}>
+                {nav.blog}
               </Link>
             </li>
           </ul>
@@ -101,12 +117,12 @@ export function SiteFooter({ quoteHref }: { quoteHref: string }) {
         <p className="inline-flex items-center gap-3 rounded-full border border-slate-700 bg-slate-900 px-4 py-2 text-slate-200">
           <ShieldCheck className="size-5 shrink-0 text-sky-400" aria-hidden />
           <span>
-            <strong className="font-semibold text-white">Compra Segura</strong>{" "}
-            - Atendimento Humanizado via WhatsApp
+            <strong className="font-semibold text-white">{t.secure}</strong>{" "}
+            {t.secureRest}
           </span>
         </p>
         <p className="text-xs text-slate-500">
-          © {site.name}. Todos os direitos reservados.
+          © {site.name}. {t.rights}
         </p>
       </div>
     </footer>

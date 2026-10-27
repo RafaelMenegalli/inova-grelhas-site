@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/site/footer";
 import { Gtm } from "@/components/site/gtm";
 import { SiteHeader } from "@/components/site/header";
 import { blogPath, type Locale } from "@/lib/articles";
+import { blogHomePath, getDictionary } from "@/dictionaries";
 import { whatsappLink } from "@/lib/site";
 
 /** Moldura das páginas do blog: header, rodapé e troca de idioma. */
@@ -18,15 +19,19 @@ export function BlogShell({
   localeBar?: boolean;
   children: React.ReactNode;
 }) {
-  const quote = whatsappLink(
-    "Olá! Vi o blog da Inova Grelhas Lineares e gostaria de um orçamento.",
-  );
+  const dict = getDictionary(locale);
+  const quote = whatsappLink(dict.whatsapp.blog);
   const other: Locale = locale === "pt" ? "en" : "pt";
 
   return (
     <div lang={copy[locale].htmlLang} className="flex min-h-screen flex-col">
       <Gtm />
-      <SiteHeader quoteHref={quote} />
+      <SiteHeader
+        lang={locale}
+        nav={dict.nav}
+        quoteHref={quote}
+        switchHrefs={{ pt: blogHomePath("pt"), en: blogHomePath("en") }}
+      />
       {localeBar && (
         <div className="border-b border-white/10 bg-slate-900">
           <div className="mx-auto flex max-w-6xl justify-end px-5 py-2">
@@ -42,7 +47,7 @@ export function BlogShell({
         </div>
       )}
       <div className="flex-1">{children}</div>
-      <SiteFooter quoteHref={quote} />
+      <SiteFooter lang={locale} quoteHref={quote} />
     </div>
   );
 }

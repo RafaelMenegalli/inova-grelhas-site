@@ -6,13 +6,13 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { faq } from "@/lib/faq";
+import { getDictionary, type Lang } from "@/dictionaries";
 import { whatsappLink } from "@/lib/site";
 
-export function FaqSection() {
-  const ask = whatsappLink(
-    "Olá! Tenho uma dúvida sobre os ralos lineares da Inova Grelhas Lineares.",
-  );
+export function FaqSection({ lang }: { lang: Lang }) {
+  const dict = getDictionary(lang);
+  const t = dict.faq;
+  const ask = whatsappLink(dict.whatsapp.question);
 
   return (
     <section id="faq" className="bg-slate-50 px-5 py-20 sm:py-28">
@@ -20,19 +20,18 @@ export function FaqSection() {
         {/* Fixo no desktop: acompanha a rolagem da lista longa de perguntas. */}
         <div className="lg:sticky lg:top-24 lg:self-start">
           <p className="text-sm font-semibold uppercase tracking-widest text-primary">
-            Dúvidas
+            {t.eyebrow}
           </p>
           <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-            Perguntas Frequentes
+            {t.title}
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-slate-600">
-            Não encontrou o que procura? Nossa equipe responde direto pelo
-            WhatsApp.
+            {t.text}
           </p>
           <Button asChild size="lg" className="mt-8 h-12 px-6 text-base">
             <a href={ask} target="_blank" rel="noopener noreferrer">
               <MessageCircle />
-              Tirar dúvida no WhatsApp
+              {t.cta}
             </a>
           </Button>
         </div>
@@ -42,7 +41,7 @@ export function FaqSection() {
           collapsible
           className="rounded-xl border border-slate-200 bg-white px-6 shadow-sm"
         >
-          {faq.map((item, i) => (
+          {t.items.map((item, i) => (
             <AccordionItem key={item.question} value={`faq-${i}`}>
               <AccordionTrigger className="py-5 text-base font-semibold text-slate-900 hover:no-underline">
                 {item.question}

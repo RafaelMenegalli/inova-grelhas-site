@@ -2,9 +2,15 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, MessageCircle } from "lucide-react";
+import { Check, Globe, Menu, MessageCircle } from "lucide-react";
 import { BrandLogo } from "@/components/site/brand-logo";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Sheet,
   SheetContent,
@@ -13,27 +19,48 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  blogHomePath,
+  homePath,
+  sectionPath,
+  type Dictionary,
+  type Lang,
+} from "@/dictionaries";
 
-const links = [
-  { href: "/#sobre", label: "Sobre" },
-  { href: "/#produtos", label: "Produtos" },
-  { href: "/#projetistas", label: "Projetistas" },
-  { href: "/blog", label: "Blog" },
+const LANGUAGES: { lang: Lang; label: string; hrefLang: string }[] = [
+  { lang: "pt", label: "Português", hrefLang: "pt-BR" },
+  { lang: "en", label: "English", hrefLang: "en" },
 ];
 
-export function SiteHeader({ quoteHref }: { quoteHref: string }) {
+type Props = {
+  lang: Lang;
+  nav: Dictionary["nav"];
+  quoteHref: string;
+  /** Página equivalente em cada idioma (padrão: a home). */
+  switchHrefs?: Record<Lang, string>;
+};
+
+export function SiteHeader({ lang, nav, quoteHref, switchHrefs }: Props) {
   const [open, setOpen] = useState(false);
+  const switchTo = switchHrefs ?? { pt: homePath("pt"), en: homePath("en") };
+
+  const links = [
+    { href: sectionPath(lang, "sobre"), label: nav.about },
+    { href: sectionPath(lang, "produtos"), label: nav.products },
+    { href: sectionPath(lang, "projetistas"), label: nav.designers },
+    { href: blogHomePath(lang), label: nav.blog },
+  ];
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-slate-950/90 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
-        <Link href="/" aria-label="Inova Grelhas Lineares: página inicial">
+        <Link href={homePath(lang)} aria-label={nav.home}>
           <BrandLogo src="/logo-horizontal-sem-fundo.png" className="h-12" />
         </Link>
 
         <nav
           className="hidden items-center gap-8 md:flex"
-          aria-label="Principal"
+          aria-label={nav.mainLabel}
         >
           {links.map((l) => (
             <Link
@@ -44,10 +71,42 @@ export function SiteHeader({ quoteHref }: { quoteHref: string }) {
               {l.label}
             </Link>
           ))}
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-9 gap-1.5 px-2 text-slate-300 hover:bg-white/10 hover:text-white"
+                aria-label={nav.language}
+              >
+                <Globe aria-hidden />
+                {lang.toUpperCase()}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="min-w-36">
+              {LANGUAGES.map((l) => (
+                <DropdownMenuItem key={l.lang} asChild>
+                  <Link
+                    href={switchTo[l.lang]}
+                    hrefLang={l.hrefLang}
+                    lang={l.hrefLang}
+                    className="justify-between"
+                  >
+                    {l.label}
+                    {l.lang === lang && (
+                      <Check className="size-4" aria-hidden />
+                    )}
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           <Button asChild size="lg" className="h-9 px-4">
             <a href={quoteHref} target="_blank" rel="noopener noreferrer">
               <MessageCircle />
-              Orçamento
+              {nav.quote}
             </a>
           </Button>
         </nav>
@@ -58,7 +117,7 @@ export function SiteHeader({ quoteHref }: { quoteHref: string }) {
               variant="ghost"
               size="icon-lg"
               className="text-slate-200 hover:bg-white/10 hover:text-white md:hidden"
-              aria-label="Abrir menu"
+              aria-label={nav.openMenu}
             >
               <Menu />
             </Button>
@@ -72,10 +131,13 @@ export function SiteHeader({ quoteHref }: { quoteHref: string }) {
                 Inova Grelhas Lineares
               </SheetTitle>
               <SheetDescription className="sr-only">
-                Navegação do site
+                {nav.menuDescription}
               </SheetDescription>
             </SheetHeader>
-            <nav className="flex flex-col gap-1 px-4" aria-label="Mobile">
+            <nav
+              className="flex flex-col gap-1 px-4"
+              aria-label={nav.mobileLabel}
+            >
               {links.map((l) => (
                 <Link
                   key={l.href}
@@ -86,10 +148,36 @@ export function SiteHeader({ quoteHref }: { quoteHref: string }) {
                   {l.label}
                 </Link>
               ))}
+
+              <div
+                role="group"
+                aria-label={nav.language}
+                className="mt-3 flex items-center gap-2 px-3 text-slate-400"
+              >
+                <Globe className="size-4" aria-hidden />
+                {LANGUAGES.map((l) => (
+                  <Link
+                    key={l.lang}
+                    href={switchTo[l.lang]}
+                    hrefLang={l.hrefLang}
+                    lang={l.hrefLang}
+                    onClick={() => setOpen(false)}
+                    aria-current={l.lang === lang ? "true" : undefined}
+                    className={
+                      l.lang === lang
+                        ? "rounded-md bg-white/10 px-3 py-1.5 text-sm font-semibold text-white"
+                        : "rounded-md px-3 py-1.5 text-sm font-medium hover:bg-white/10 hover:text-white"
+                    }
+                  >
+                    {l.lang.toUpperCase()}
+                  </Link>
+                ))}
+              </div>
+
               <Button asChild size="lg" className="mt-4 h-11">
                 <a href={quoteHref} target="_blank" rel="noopener noreferrer">
                   <MessageCircle />
-                  Pedir orçamento
+                  {nav.quoteLong}
                 </a>
               </Button>
             </nav>

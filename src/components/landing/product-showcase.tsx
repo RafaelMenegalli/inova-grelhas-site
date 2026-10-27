@@ -11,16 +11,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getDictionary, type Lang } from "@/dictionaries";
 import { getActiveProducts } from "@/lib/products";
 import { whatsappLink } from "@/lib/site";
 
-export async function ProductShowcase() {
+export async function ProductShowcase({ lang }: { lang: Lang }) {
+  const t = getDictionary(lang);
   const products = await getActiveProducts();
 
   if (products.length === 0) {
     return (
       <p className="rounded-xl border border-dashed border-slate-300 bg-white p-12 text-center text-slate-500">
-        Catálogo em atualização. Fale com a gente para receber a lista completa.
+        {t.catalog.empty}
       </p>
     );
   }
@@ -28,14 +30,14 @@ export async function ProductShowcase() {
   return (
     <ul className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
       {products.map((product) => {
-        const message = `Olá, tenho interesse no modelo ${product.name} da Inova Grelhas Lineares. Gostaria de um orçamento.`;
+        const message = t.whatsapp.product.replace("{name}", product.name);
         return (
           <li key={product.id}>
             <Card className="h-full gap-0 overflow-hidden border-slate-200 py-0 shadow-sm transition-shadow hover:shadow-xl">
               <div className="relative aspect-[4/3] bg-gradient-to-br from-slate-100 to-slate-200">
                 <Image
                   src={product.imageUrl}
-                  alt={`Ralo linear ${product.name}`}
+                  alt={`${t.catalog.imageAlt} ${product.name}`}
                   fill
                   sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                   className="object-cover"
@@ -55,7 +57,7 @@ export async function ProductShowcase() {
                     <li key={v.id}>
                       <Badge variant="secondary" className="h-auto py-1">
                         {v.size} · {v.finish}
-                        {v.hasScreen ? " · com tela" : ""}
+                        {v.hasScreen ? ` · ${t.catalog.withScreen}` : ""}
                       </Badge>
                     </li>
                   ))}
@@ -69,7 +71,7 @@ export async function ProductShowcase() {
                     rel="noopener noreferrer"
                   >
                     <MessageCircle />
-                    Fazer Orçamento
+                    {t.catalog.quote}
                   </a>
                 </Button>
               </CardFooter>

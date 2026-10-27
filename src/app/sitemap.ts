@@ -16,6 +16,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
     {
+      url: abs("/en"),
+      lastModified: productsUpdatedAt ?? undefined,
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
       url: abs(blogPath("pt")),
       lastModified: latest,
       changeFrequency: "weekly",
