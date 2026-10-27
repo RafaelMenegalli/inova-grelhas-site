@@ -7,7 +7,12 @@ import { normalizeCategory } from "@/lib/categories";
 import { htmlToText } from "@/lib/content-format";
 import { prisma } from "@/lib/prisma";
 import { toSafeHtml } from "@/lib/sanitize";
-import { deleteImage, uploadImage, validateImage } from "@/lib/storage";
+import {
+  copyImage,
+  deleteImage,
+  uploadImage,
+  validateImage,
+} from "@/lib/storage";
 
 export type FormState = { error?: string };
 
@@ -242,6 +247,49 @@ export async function toggleProductStatus(
 
   refreshProducts();
   return {};
+}
+
+/**
+ * Cria uma cópia do produto (com variações e uma cópia própria da foto) e abre a edição.
+ * A cópia nasce inativa, para não aparecer na vitrine antes de ser revisada.
+ */
+export async function duplicateProduct(id: string): Promise<FormState> {
+  await requireAdmin();
+  const product = await prisma.product.findUnique({
+    where: { id },
+    include: { variations: { orderBy: { createdAt: "asc" } } },
+  });
+  if (!product) return { error: "Produto não encontrado." };
+
+  let imageUrl: string;
+  try {
+    imageUrl = await copyImage(product.imageUrl, "products");
+  } catch (e) {
+    console.error(e);
+    return { error: "Não foi possível copiar a imagem. Tente novamente." };
+  }
+
+  const copy = await prisma.product.create({
+    data: {
+      name: `${product.name} (cópia)`,
+      description: product.description,
+      imageUrl,
+      isActive: false,
+      variations: {
+        create: product.variations.map(
+          ({ size, finish, hasScreen, isActive }) => ({
+            size,
+            finish,
+            hasScreen,
+            isActive,
+          }),
+        ),
+      },
+    },
+  });
+
+  refreshProducts();
+  redirect(`/admin/produtos/${copy.id}/editar`);
 }
 
 export async function deleteProduct(id: string): Promise<FormState> {

@@ -2,8 +2,19 @@
 
 import Link from "next/link";
 import { useState, useTransition } from "react";
-import { Eye, EyeOff, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-import { deleteProduct, toggleProductStatus } from "../actions";
+import {
+  Copy,
+  Eye,
+  EyeOff,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+} from "lucide-react";
+import {
+  deleteProduct,
+  duplicateProduct,
+  toggleProductStatus,
+} from "../actions";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -42,6 +53,14 @@ export function ProductActions({
     });
   }
 
+  function duplicate() {
+    startTransition(async () => {
+      // Em sucesso a action redireciona para a edição da cópia.
+      const result = await duplicateProduct(id);
+      if (result?.error) window.alert(result.error);
+    });
+  }
+
   function remove() {
     startTransition(async () => {
       const result = await deleteProduct(id);
@@ -69,6 +88,10 @@ export function ProductActions({
               <Pencil />
               Editar
             </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={duplicate}>
+            <Copy />
+            Duplicar
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={toggle}>
             {isActive ? <EyeOff /> : <Eye />}
