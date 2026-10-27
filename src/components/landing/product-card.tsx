@@ -101,14 +101,15 @@ export function ProductCard({ product, labels, quoteHref }: Props) {
           type="button"
           onClick={() => setOpen(true)}
           aria-label={`${labels.details}: ${product.name}`}
-          className="relative block aspect-[4/3] cursor-pointer bg-gradient-to-br from-slate-100 to-slate-200 outline-none focus-visible:ring-4 focus-visible:ring-ring/50 dark:from-slate-800 dark:to-slate-900"
+          className="relative block aspect-[4/3] w-full cursor-pointer bg-white outline-none focus-visible:ring-4 focus-visible:ring-ring/50"
         >
           <Image
             src={product.images[0]}
             alt={`${labels.imageAlt} ${product.name}`}
             fill
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-            className="object-cover"
+            // Foto inteira (sem cortes) com respiro interno; fundo branco para fotos de produto.
+            className="h-full w-full object-contain p-4"
           />
         </button>
         <CardHeader className="gap-2 px-6 pt-6">
