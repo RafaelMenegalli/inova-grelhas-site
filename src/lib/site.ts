@@ -1,14 +1,20 @@
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 
+/** Endereço oficial do site em produção (sitemap, canonical, Open Graph e JSON-LD). */
+const PRODUCTION_URL = "https://www.inovagrelhaslineares.com.br";
+
+function resolveSiteUrl() {
+  const configured = process.env.NEXT_PUBLIC_SITE_URL;
+  const isLocal = !configured || /localhost|127\.0\.0\.1/.test(configured);
+  // Em produção, uma variável ausente ou apontando para localhost (por exemplo, copiada do
+  // .env local para a Vercel) nunca pode vazar para o sitemap: vale o endereço oficial.
+  if (process.env.NODE_ENV === "production" && isLocal) return PRODUCTION_URL;
+  return (configured || "http://localhost:3000").replace(/\/$/, "");
+}
+
 export const site = {
   name: "Inova Grelhas Lineares",
-  // Em produção sem a variável, usa o domínio da Vercel (nunca localhost no sitemap).
-  url: (
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    (process.env.VERCEL_PROJECT_PRODUCTION_URL
-      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-      : "http://localhost:3000")
-  ).replace(/\/$/, ""),
+  url: resolveSiteUrl(),
   // Formato internacional, só dígitos (ex.: 5519999999999).
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "5519992950901",
   // Vídeo vertical 9:16 do hero (tour da fábrica / instalação). Opcional.
