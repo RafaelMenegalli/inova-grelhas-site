@@ -1,6 +1,7 @@
 ﻿import Image from "next/image";
 import { Suspense } from "react";
 import { PageHeader } from "@/components/admin/fields";
+import { Pagination } from "@/components/admin/pagination";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,14 +14,25 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { requireAdmin } from "@/lib/auth";
+import { paginate, parsePage } from "@/lib/pagination";
 import { productImages } from "@/lib/product-images";
 import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/utils";
 import { ProductActions } from "./product-actions";
 
-async function ProductsTable() {
+type SearchParams = Promise<{ page?: string | string[] }>;
+
+async function ProductsTable({ searchParams }: { searchParams: SearchParams }) {
   await requireAdmin();
+  const requestedPage = parsePage((await searchParams).page);
+  const [total, active] = await Promise.all([
+    prisma.product.count(),
+    prisma.product.count({ where: { isActive: true } }),
+  ]);
+  const { page, totalPages, skip, take } = paginate(total, requestedPage);
   const products = await prisma.product.findMany({
+    skip,
+    take,
     orderBy: { createdAt: "desc" },
     select: {
       id: true,
@@ -33,21 +45,16 @@ async function ProductsTable() {
     },
   });
 
-  const active = products.filter((p) => p.isActive).length;
-
   return (
     <>
       <p className="mb-3 text-sm text-muted-foreground">
-        <strong className="font-semibold text-foreground">
-          {products.length}
-        </strong>{" "}
-        {products.length === 1 ? "produto cadastrado" : "produtos cadastrados"}
-        {products.length > 0 && (
+        <strong className="font-semibold text-foreground">{total}</strong>{" "}
+        {total === 1 ? "produto cadastrado" : "produtos cadastrados"}
+        {total > 0 && (
           <>
             {" "}
-            · {active} {active === 1 ? "ativo" : "ativos"} ·{" "}
-            {products.length - active}{" "}
-            {products.length - active === 1 ? "inativo" : "inativos"}
+            · {active} {active === 1 ? "ativo" : "ativos"} · {total - active}{" "}
+            {total - active === 1 ? "inativo" : "inativos"}
           </>
         )}
       </p>
@@ -126,11 +133,22 @@ async function ProductsTable() {
           </TableBody>
         </Table>
       </Card>
+      <Pagination
+        basePath="/admin/produtos"
+        page={page}
+        totalPages={totalPages}
+        total={total}
+        noun="produtos"
+      />
     </>
   );
 }
 
-export default function ProdutosPage() {
+export default function ProdutosPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
   return (
     <>
       <PageHeader
@@ -139,7 +157,7 @@ export default function ProdutosPage() {
         action={{ href: "/admin/produtos/novo", label: "Novo produto" }}
       />
       <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
-        <ProductsTable />
+        <ProductsTable searchParams={searchParams} />
       </Suspense>
     </>
   );
