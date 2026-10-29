@@ -8,11 +8,12 @@
 export type AffiliateAttrs = {
   title: string;
   imageUrl: string;
-  price: string;
   link: string;
 };
 
-export const AFFILIATE_LIMITS = { title: 160, price: 40, url: 2000 } as const;
+const PROMO_TEXT = "Em promoção! Confira o valor atualizado na loja.";
+
+export const AFFILIATE_LIMITS = { title: 160, url: 2000 } as const;
 
 /** Árvore de elementos: [tag, atributos, ...filhos]. Mesmo formato do DOMOutputSpec do Tiptap. */
 export type Spec = string | [string, Record<string, string>, ...Spec[]];
@@ -25,7 +26,7 @@ const CLASSES = {
   label:
     "m-0 text-xs font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400",
   title: "m-0 mt-1 text-lg font-bold text-slate-900 dark:text-slate-50",
-  price: "m-0 mt-2 text-2xl font-extrabold text-primary dark:text-sky-400",
+  promo: "m-0 mt-2 text-base font-bold text-amber-700 dark:text-amber-400",
   button:
     "w-full rounded-lg bg-primary px-6 py-3 text-center font-bold text-primary-foreground no-underline transition-colors hover:bg-primary/90 md:w-auto",
 } as const;
@@ -59,7 +60,6 @@ export function normalizeAffiliate(
     title,
     link,
     imageUrl: safeUrl(input.imageUrl ?? "", true) ?? "",
-    price: (input.price ?? "").trim().slice(0, AFFILIATE_LIMITS.price),
   };
 }
 
@@ -82,7 +82,8 @@ export function affiliateSpec(a: AffiliateAttrs, inEditor = false): Spec {
     ["p", { class: CLASSES.label }, "Oferta parceira"],
     ["h4", { class: CLASSES.title }, a.title],
   ];
-  if (a.price) body.push(["p", { class: CLASSES.price }, a.price]);
+  // O preço muda toda hora e o card ficaria desatualizado: no lugar dele, avisa da promoção.
+  body.push(["p", { class: CLASSES.promo }, PROMO_TEXT]);
   children.push(["div", { class: CLASSES.body }, ...body]);
   children.push([
     "a",
@@ -103,7 +104,6 @@ export function affiliateSpec(a: AffiliateAttrs, inEditor = false): Spec {
       "data-affiliate": "",
       "data-title": a.title,
       "data-image-url": a.imageUrl,
-      "data-price": a.price,
       "data-link": a.link,
       class: CLASSES.card,
     },
@@ -163,7 +163,6 @@ function readDataAttrs(startTag: string): Partial<AffiliateAttrs> {
   return {
     title: get("data-title"),
     imageUrl: get("data-image-url"),
-    price: get("data-price"),
     link: get("data-link"),
   };
 }

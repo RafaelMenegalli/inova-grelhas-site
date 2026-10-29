@@ -31,11 +31,6 @@ export const AffiliateProduct = Node.create({
         rendered: false,
         parseHTML: fromData("data-image-url"),
       },
-      price: {
-        default: "",
-        rendered: false,
-        parseHTML: fromData("data-price"),
-      },
       link: { default: "", rendered: false, parseHTML: fromData("data-link") },
     };
   },

@@ -40,13 +40,7 @@ export function toSafeHtml(content: string) {
       "img",
     ],
     allowedAttributes: {
-      div: [
-        "data-affiliate",
-        "data-title",
-        "data-image-url",
-        "data-price",
-        "data-link",
-      ],
+      div: ["data-affiliate", "data-title", "data-image-url", "data-link"],
       a: ["href", "rel", "target"],
       img: ["src", "alt", "loading", "decoding"],
     },

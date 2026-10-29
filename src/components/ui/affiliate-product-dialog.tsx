@@ -20,7 +20,7 @@ import {
   type AffiliateAttrs,
 } from "@/lib/affiliate-card";
 
-const EMPTY = { title: "", imageUrl: "", price: "", link: "" };
+const EMPTY = { title: "", imageUrl: "", link: "" };
 
 type Props = {
   open: boolean;
@@ -108,7 +108,8 @@ export function AffiliateProductDialog({
         <DialogHeader>
           <DialogTitle>Inserir produto afiliado</DialogTitle>
           <DialogDescription>
-            O card aparece no meio do artigo com o botão &quot;Ver Oferta&quot;.
+            O card aparece no meio do artigo, avisa que o produto está em
+            promoção e leva ao botão &quot;Ver Oferta&quot; (sem mostrar preço).
           </DialogDescription>
         </DialogHeader>
 
@@ -165,18 +166,6 @@ export function AffiliateProductDialog({
                 className="size-20 rounded-md border bg-white object-contain p-1"
               />
             )}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="aff-price">Preço</Label>
-            <Input
-              id="aff-price"
-              value={fields.price}
-              onChange={set("price")}
-              maxLength={AFFILIATE_LIMITS.price}
-              placeholder="R$ 149,90"
-              className="h-10"
-            />
           </div>
 
           <div className="flex flex-col gap-2">
